@@ -1,0 +1,183 @@
+.collection-table-wrapper {
+    border: 1px solid rgb(var(--border-color));
+}
+
+.collection-table-list+.collection-table-list {
+    border-top: 1px solid rgb(var(--border-color));
+}
+
+.collection-table-list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+}
+
+.collection-table-list-header-left {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.collection-table-list-price {
+    flex: 1;
+    text-align: center;
+}
+
+.head-info-media {
+    width: 52px;
+    height: 100%;
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--image-bg);
+    position: relative;
+}
+
+.head-info-media img {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+.collection-table-list-header-right {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+.collection-table-list-toggle-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--body-alternate-background);
+    border-radius: 100%;
+    cursor: pointer;
+}
+
+.collection-table-list-toggle-icon svg {
+    display: block;
+    width: 10px;
+    height: 10px;
+    transition: 0.3s ease;
+}
+
+
+.collection-table-variant-img {
+    width: 42px;
+    overflow: hidden;
+    background: var(--image-bg);
+    position: relative;
+    border-radius: 6px;
+    height: 100%;
+}
+
+.collection-table-variant-img img {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.collection-table-variant-list {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    padding-right: 76px;
+}
+
+.collection-table-variant-info,
+.collection-table-variant-price,
+.collection-table-variant-quantity,
+.collection-table-variant-total-price {
+    flex: 0 0 20%;
+}
+
+.collection-table-variant-price,
+.collection-table-variant-quantity,
+.collection-table-variant-total-price {
+    text-align: center;
+}
+
+.collection-table-list[open] .collection-table-list-header {
+    background: var(--body-alternate-background);
+}
+.collection-table-list[open] .collection-table-list-header .collection-table-list-toggle-icon {
+    background: var(--body-background);
+}
+.collection-table-variant-info {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 16px;
+}
+.collection-table-variant-quantity .product-variants-wrapper {
+    padding-bottom: 0;
+}
+.collection-table-variant-quantity .product-variants-wrapper .product-variants-title {
+    display: none;
+}
+.collection-table-variant-quantity .quantity {
+    max-width: 100%;
+    margin-top: 0;
+    align-items: center;
+}
+.collection-table-variant-quantity .quantity-inner {
+    height: 30px;
+    background: var(--body-background);
+    gap: 0;
+    max-width: 100px;
+}
+.collection-table-variant-quantity .quantity-input {
+    border-left: 1px solid var(--form-border);
+    border-right: 1px solid var(--form-border);
+    border-radius: 0;
+}
+.collection-table-variant-add-to-cart .product-checkout-buttons {
+    padding: 0;
+    display: block;
+    text-align: right;
+}
+.collection-table-variant-add-to-cart {
+    margin-left: auto;
+}
+.collection-table-variant-img-info span {
+    display: block;
+}
+
+.collection-table-variant-list.view-all-variants-button {
+    justify-content: center;
+    margin-top: 8px;
+    padding: 10px;
+    text-transform: uppercase;
+    font-weight: 700;
+    background: var(--body-alternate-background);
+}
+.collection-table-list-price span {
+    font-weight: bold;
+}
+.collection-table-list[open] .collection-table-list-header .collection-table-list-toggle-icon svg {
+    transform: rotate(180deg);
+}
+.collection-table-variant-price span:first-child {
+    font-weight: bold;
+    margin-right: 4px;
+}
+.collection-table-variant-total-price {
+    font-weight: bold;
+}
+.collection-table-list-all-addtocart {
+    text-align: right;
+}
+
+@media (max-width:991px) {
+    .collection-table-wrapper {
+        overflow-x: auto;
+    }
+    .collection-table-list {
+        min-width: 900px;
+    }
+}
