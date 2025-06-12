@@ -1,0 +1,108 @@
+.marque-text {
+    position: relative;
+    overflow: hidden;
+}
+
+.marque-text-item {
+    display: flex;
+    white-space: nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.marque-text-item .marquee-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.marquee-icon {
+    margin-left: var(--marquee-icon-gap);
+}
+
+.marque-text-content {
+    display: flex;
+}
+
+.marque-text-content.on-scroll-move {
+    justify-content: center;
+}
+
+.marque-text-node * {
+    font-size: var(--node-size);
+    color: var(--marquee-text-color);
+    line-height: 1.2;
+}
+
+.marque-text-node {
+    padding-right: var(--marquee-gap);
+}
+
+.marque-text-node strong {
+    -webkit-text-stroke: var(--outline-thickness) var(--marquee-text-color);
+    text-stroke: var(--outline-thickness) var(--marquee-text-color);
+    -webkit-text-fill-color: transparent;
+    text-fill-color: transparent;
+}
+
+.marque-text-node svg {
+    fill: var(--marquee-text-color);
+    width: var(--node-size);
+    height: var(--node-size);
+}
+
+.marque-text-node.small-icon svg {
+    width: calc(var(--node-size) / 2);
+    height: calc(var(--node-size) / 2);
+}
+
+.autoplay-infinite .marque-text-node {
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    animation-name: text-marque;
+    animation-duration: var(--animation-speed);
+}
+
+.ltr-direction .marque-text-node {
+    animation-direction: reverse;
+}
+
+.rtl-direction .marque-text-node {
+    animation-direction: normal;
+}
+
+.outlined-text {
+    -webkit-text-stroke-color: var(--marquee-text-color);
+    -webkit-text-stroke-width: var(--outline-thickness);
+    -webkit-text-fill-color: transparent;
+}
+
+@keyframes text-marque {
+    0% {
+        transform: translateX(0);
+        visibility: visible;
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+.marque-text-inner-box {
+    width: 100%;
+}
+
+.marquee-icon {
+	width: var(--image-desktop-with);
+}
+.marquee-icon img {
+	width: 100%;
+	height: 100%;
+}
+@media (max-width:767px) {
+    .autoplay-infinite .marque-text-node {
+        animation-duration: calc(var(--animation-speed)* 0.5);
+    }
+    .marquee-icon {
+        width: var( --image-mobile-with);
+    }
+}
