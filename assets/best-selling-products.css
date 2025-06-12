@@ -1,0 +1,220 @@
+.best-selling-products-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.best-selling-products-image-wrapper {
+    flex: 0 0 100%;
+    max-width: 100%;
+    position: relative;
+}
+
+.best-selling-products-image {
+    height: 100%;
+}
+
+.best-selling-products-content-wrapper {
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding: 20px 20px 0;
+}
+
+.best-selling-products-image-overlay-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1;
+    padding: 30px;
+}
+
+.best-selling-products-image-overlay-heading {
+    margin-bottom: 20px;
+    color: var(--overlay-color);
+}
+
+.best-selling-products-image-overlay-text {
+    color: var(--overlay-color);
+    margin-bottom: 20px;
+}
+
+.best-selling-products-media:after {
+    content: "";
+    background-color: rgb(var(--overlay-bg));
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    z-index: 0;
+    opacity: var(--overlay-opacity);
+}
+
+.best-selling-products-title {
+    margin-bottom: 20px;
+    max-width: 600px;
+}
+
+.best-selling-products-content .best-selling-products-title+.best-selling-products-btn,
+.best-selling-products-content>.best-selling-products-btn
+ {
+    margin-bottom: 20px;
+}
+
+.best-selling-products-wrapper .slider-progress+.best-selling-products-desc,
+.best-selling-products-wrapper .slider-progress+.best-selling-products-title {
+    margin-top: 20px;
+}
+
+.best-selling-products-desc {
+    margin-bottom: 50px;
+    max-width: 600px;
+}
+
+.best-selling-products-list {
+    /* display: flex; */
+    margin: 50px -10px 0;
+    width: 100%;
+}
+.best-selling-products-list-stacked {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-left: 0;
+    margin-right: 0;
+}
+.best-selling-products-list-stacked .best-selling-products-item {
+    padding: 0;
+}
+.best-selling-products-list .slick-track {
+    margin-left: unset;
+}
+
+.best-selling-products-item {
+    padding: 0 8px;
+}
+
+.best-selling-products-item-inner {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 20px;
+    border: 1px solid rgb(var(--border-color));
+    border-radius: var(--block-radius);
+    padding: 8px;
+    flex: 0 0 33.333%;
+    background: var(--body-alternate-background);
+    align-items: center;
+}
+
+.best-selling-products-img {
+    width: 80px;
+    border-radius: var(--block-radius);
+    overflow: hidden;
+}
+
+.best-selling-products-img-info .product-pricing {
+    padding-bottom: 12px;
+}
+
+.best-selling-products-wrapper .slider-progress {
+    position: relative;
+    margin-top: 40px;
+    display: block;
+    background-color: transparent;
+    width: calc(100% - var(--slider-arrow-width) - var(--slider-arrow-width) - 40px);
+    height: 2px;
+    background-image: linear-gradient(to right,var(--text-color),var(--text-color));
+    background-repeat: no-repeat;
+    background-size: 0% 100%;
+    overflow: hidden;
+    z-index: 1;
+    opacity: 1;
+    transition: background-size .4s ease-in-out;
+}
+
+.best-selling-products-wrapper .slider-progress:after {
+    content: "";
+    background: var(--text-color);
+    width: 100%;
+    height: 2px;
+    position: absolute;
+    opacity: 0.2;
+}
+
+.best-selling-products-list .slide-arrow {
+    top: auto;
+    bottom: -60px;
+} 
+
+@media (min-width:768px) {
+    .best-selling-products-image-wrapper {
+        flex: 0 0 45%;
+        max-width: 45%;
+    }
+    .best-selling-products-content-wrapper {
+        flex: 0 0 55%;
+        max-width: 55%;
+        padding: 30px;
+    }
+    .best-selling-products-image-overlay-content {
+        padding: 40px;
+    }
+    .best-selling-products-list-stacked {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width:1025px) {
+    .best-selling-products-content-wrapper {
+        padding: 50px;
+    }
+    .best-selling-products-image-overlay-content {
+        padding: 60px;
+    }
+}
+
+@media (min-width:1200px) {
+    .best-selling-products-list-stacked {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width:1441px) {
+    .best-selling-products-content-wrapper {
+        padding: 70px;
+    }
+    .best-selling-products-img {
+        width: 115px;
+    }
+}
+
+@media (max-width:767px) {
+    .best-selling-products-desc {
+        margin-bottom: 30px;
+    }
+    .best-selling-products-wrapper .slider-progress {
+        display: none;
+    }
+    .best-selling-products-list .slide-arrow {
+        top: auto;
+        bottom: 0;
+        transform: translateX(-50%);
+    }
+    .best-selling-products-list .slide-arrow.prev-arrow {
+        left: calc(50% - var(--slider-arrow-width)/2 - 5px);
+    }
+    .best-selling-products-list .slide-arrow.next-arrow {
+        left: calc(50% + var(--slider-arrow-width)/2 + 5px);
+    }
+    .best-selling-products-list.slick-initialized {
+        padding-bottom: calc(var(--slider-arrow-width) + 20px);
+    }
+}
+
+@media (max-width:575px) {
+    .best-selling-products-list {
+        margin: 30px 0px 0;
+    }
+    .best-selling-products-item {
+        padding: 0px;
+    }
+}
