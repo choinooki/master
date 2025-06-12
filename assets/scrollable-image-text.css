@@ -1,0 +1,167 @@
+  
+  .scrollable-image-text-item-marquee-wrapper:after, .scrollable-image-text-item-marquee-wrapper:before {
+    content: "";
+    height: 100%;
+    position: absolute;
+    top: 0;
+    background: linear-gradient(90deg, var(--body-alternate-background) 0% 35%, #fff0);
+    z-index: 1;
+    width: 4.996003rem;
+  }
+  
+  .scrollable-image-text-item-marquee-wrapper:after {
+    right: 0;
+    background: linear-gradient(-70deg, var(--body-alternate-background) 0%, var(--body-alternate-background) 45%, rgba(255, 255, 255, 0) 100%);
+  }
+
+  .scrollable-image-text-image-inner{
+    background: var(--image-bg);
+  }
+
+  .scrollable-image-text-item-marquee-wrapper {
+    display: flex;
+    overflow: hidden;
+    z-index: 1;
+    width: 100%;
+    position: relative;
+    background: var(--marquee-background);
+  }
+  
+  .scrollable-image-text-item-marquee-node {
+    display: flex;
+    white-space: nowrap;
+    padding: 4px;
+    animation: scrollable-image-text-item-marque 5s linear infinite;
+    margin: 0 8px;
+    color: var(--marquee-text-color);
+  }
+  
+  @keyframes scrollable-image-text-item-marque {
+      0% {
+          transform: translate(0);
+          visibility: visible;
+      }
+      100% {
+          transform: translate(-100%);
+      }
+  }
+  
+@media screen and (min-width: 992px) {
+  
+  .scrollable-image-text-item {
+    grid-column-gap: 15px;
+    grid-row-gap: .8579088472rem;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr; 
+  }
+  
+  .scrollable-image-text-content-wrapper{
+    position: relative;
+  }
+  .scrollable-image-text-content {
+    position: sticky;
+    top: 16px; 
+    height: 100vh;
+  }
+  .scrollable-image-text-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background: var(--body-alternate-background);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.4s;
+    border-radius: var(--block-radius);
+    row-gap: 25px;
+    padding: 60px;
+    pointer-events: none;
+  }
+
+  .scrollable-image-text-inner.text-left {
+    align-items: flex-start;
+ }
+
+ .scrollable-image-text-inner.text-right {
+  align-items: flex-end;
+  }
+  .scrollable-image-text-inner.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .scrollable-image-text-image-inner {
+    position: sticky;
+    top: 16px;
+    height: 100vh;
+    border-radius: var(--block-radius);
+    overflow: hidden;
+  }
+  
+  .scrollable-image-text-item-marquee-wrapper:after, .scrollable-image-text-item-marquee-wrapper:before {
+    content: "";
+    height: 100%;
+    position: absolute;
+    top: 0;
+    background: linear-gradient(90deg, var(--body-alternate-background) 0% 35%, #fff0);
+    z-index: 1;
+    width: 4.996003rem;
+  }
+  
+  .scrollable-image-text-item-marquee-wrapper:after {
+    right: 0;
+    background: linear-gradient(-70deg, var(--body-alternate-background) 0%, var(--body-alternate-background) 45%, rgba(255, 255, 255, 0) 100%);
+  }
+  .mobile-block {
+    display: none;
+  }
+}
+
+
+@media screen and (max-width: 991px) {
+.desktop-block {
+	display: none;
+}
+.scrollable-image-text-mobile-wrapper {
+	display: flex;
+	flex-wrap: wrap;
+	row-gap: 30px;
+	align-items: center;
+	justify-content: center;
+  flex-direction: column;
+}
+.scrollable-image-text-mobile-content {
+	padding: 30px 10px;
+	background: var(--body-alternate-background);
+  border-bottom-left-radius: var(--block-radius);
+  border-bottom-right-radius: var(--block-radius);
+}
+.scrollable-image-text-mobile-item {
+	width: 100%;
+}
+.scrollable-image-text-image-inner {
+  border-top-left-radius: var(--block-radius);
+  border-top-right-radius: var(--block-radius);
+  overflow: hidden;
+}
+}
+
+@media screen and (max-width: 767px) {
+  .scrollable-image-text-mobile-wrapper.mobile-swipe-true {
+    display: grid;
+    gap: 15px;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(80%, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(80%, 1fr));
+    overflow-x: auto;
+    padding-bottom: 10px;
+    scroll-snap-type: x mandatory;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+}
