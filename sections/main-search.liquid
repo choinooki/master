@@ -1,0 +1,335 @@
+{%- liquid
+  assign sort_by = search.sort_by | default: search.default_sort_by
+  if search.url
+    assign clearAll = search.url | append: '&type=product'
+  else
+    assign terms = search.terms | escape
+    assign clearAll = '?q=' | append: terms | append: '&options%5Bprefix%5D=last&sort_by=' | append: sort_by | append: '&type=product'
+  endif
+  assign results = search
+
+    assign sort_by = search.sort_by | default: search.default_sort_by
+    if search.url
+      assign clearAll = search.url | append: '&type=product'
+    else
+      assign terms = search.terms | escape
+      assign clearAll = '?q=' | append: terms | append: '&options%5Bprefix%5D=last&sort_by=' | append: sort_by | append: '&type=product'
+    endif
+-%}
+{% if section.index <= 2 %}
+  {{ 'search.css' | asset_url | preload_tag: as: 'style' }}
+  {{ 'main-collection.css' | asset_url | preload_tag: as: 'style' }}
+{% endif %}
+{{ 'search.css' | asset_url | stylesheet_tag }}
+{{ 'main-collection.css' | asset_url | stylesheet_tag }}
+
+  <div class="section-container scheme-{{ section.settings.color_scheme }}">
+    <div class="searchbar-head">
+      <div class="container md-container">
+        <div class="section-heading-box text-center">
+          <h2 class="section-heading">{{ 'templates.search.search_heading' | t }}</h2>
+        </div>
+        <form action="{{ routes.search_url }}" method="get" role="search" class="search" data-search-form>
+          <input name="type" type="hidden" value="product">
+          <div class="search-drawer-input-group">
+            <label for="Search-In-Template_page" class="hidden">{{ 'general.search.search' | t }}</label>
+            <input
+              type="text"
+              class="form-control search-drawer-input"
+              id="Search-In-Template_page"
+              name="q"
+              value="{{ search.terms | escape }}"
+              placeholder="{{ 'general.search.search' | t }}"
+            >
+            <button type="submit" class="search-drawer-button" aria-label="{{ 'general.search.search' | t }}">
+              {% render 'theme-icons', theme_icon: 'search' %}
+            </button>
+          </div>
+        </form>
+        <p class="search-result-count" data-search-result-count>
+          {%- if search.results.size > 0 -%}
+           {{ 'templates.search.results_with_count_and_term' | t: terms: search.terms, count: search.results_count }}
+          {% endif %}
+        </p>
+        {% if search.performed %}
+          <ul class="list-inline main-search-tab-list">
+              <li
+                class="main-search-tab-item{% if search.types contains 'product' %} active{% endif %}"
+                data-tab="product-tab"
+                product-tab-item
+              >
+                <a
+                  href="{{ '?type=product&options%5Bprefix%5D=last&q=' | append: search.terms | escape }}"
+                  class="main-search-tab-link text-small cursor-pointer"
+                  ><span>{{ 'templates.search.products' | t  }}</span></a>
+              </li>
+              <li
+                class="main-search-tab-item{% if search.types contains 'article' %} active{% endif %}"
+                data-tab="article-tab"
+                product-tab-item
+              >
+                <a
+                  href="{{ '?type=article&options%5Bprefix%5D=last&q=' | append: search.terms | escape }}"
+                  class="main-search-tab-link text-small cursor-pointer"
+                  ><span>{{ 'templates.search.blog_posts' | t  }}</span></a>
+              </li>
+              <li
+                class="main-search-tab-item{% if search.types contains 'page' %} active{% endif %}"
+                data-tab="page-tab"
+                product-tab-item
+              >
+                <a
+                  href="{{ '?type=page&options%5Bprefix%5D=last&q=' | append: search.terms | escape }}"
+                  class="main-search-tab-link text-small cursor-pointer"
+                  ><span>{{ 'templates.search.page' | t }}</span></a>
+              </li>
+          </ul>
+        {% endif %}
+      </div>
+    </div>
+    <div class="search-result-body" data-search-content>
+        {%- if search.performed and search.results_count > 0 -%}
+          {% paginate search.results by 9 %}
+            {% if search.types contains 'product' %}
+                <div class="main-collection-wrapper">
+                  {% if section.settings.enable_filtering or section.settings.enable_sorting %}
+                    {% render 'collection-filter-sort', results: search, clearAll: search.url, block: section %}
+                  {% endif %}
+
+                  <div class="container-fluid" data-products-container data-id="{{ section.id }}">
+                 
+                   {%- if section.settings.enable_filtering  and search.filters.size > 0 -%}
+                    {% capture activefilter %}
+                    {%- for filter in search.filters -%}
+                      {%- for value in filter.active_values -%}
+                        <li class="applied-filter-item">
+                          <a class="applied-filter-link applied-filter-remove" href="{{ value.url_to_remove }}">
+                            {{ value.label | escape }}
+                            <span>
+                              <svg width="9" height="9" viewBox="0 0 10 10" fill="none">
+                                <path d="M4.99999 5.63805L1.56815 9.07116L1.56817 9.07118L1.56568 9.07359C1.39129 9.2421 1.11478 9.24207 0.94039 9.07361L0.940374 9.07359C0.761654 8.9009 0.756713 8.61601 0.929333 8.43722L0.929312 8.4372L0.931765 8.43475L4.36371 5.00153L0.931765 1.56832C0.847411 1.48393 0.800012 1.3695 0.8 1.25017L4.99999 5.63805ZM4.99999 5.63805L8.43186 9.07119L8.43432 9.07364L8.43434 9.07362C8.6131 9.24635 8.89802 9.2414 9.07068 9.06258M4.99999 5.63805L8.9268 1.42689C9.02443 1.32923 9.02439 1.17087 8.92674 1.07321C8.87986 1.02635 8.81632 1.00003 8.75007 1M9.07068 9.06258L8.92684 8.9237L9.07067 9.06258C9.07067 9.06258 9.07068 9.06258 9.07068 9.06258ZM9.07068 9.06258C9.23909 8.88816 9.23912 8.61164 9.07065 8.43722L9.06827 8.43476L9.06825 8.43478L5.63627 5.00153M5.63627 5.00153L5.49493 5.14293L5.35348 5.00153L5.49493 4.86014L5.63627 5.00153ZM5.63627 5.00153L9.06825 1.56829C9.24398 1.39249 9.24388 1.10752 9.06816 0.931793L9.06814 0.931768C8.98381 0.847466 8.86952 0.800104 8.75034 0.8M8.75034 0.8L8.75007 1M8.75034 0.8C8.75028 0.8 8.75022 0.8 8.75016 0.8L8.75007 1M8.75034 0.8C8.63086 0.799836 8.51624 0.847314 8.43186 0.931875L8.75007 1M4.99999 4.36502L1.56838 0.932136C1.56833 0.932089 1.56829 0.932042 1.56824 0.931995L4.99999 4.36502ZM4.99999 4.36502L8.43163 0.932105L4.99999 4.36502ZM1.24993 0.8L1.24997 1L0.8 1.25013C0.799968 1.00164 1.00133 0.80013 1.24979 0.8C1.24984 0.8 1.24988 0.8 1.24993 0.8Z" fill="currentColor" stroke="currentColor" stroke-width="0.4"/>
+                              </svg>
+                            </span>
+                          </a>
+                        </li>
+                        {% if filter.type == 'price_range' %}
+                          {%- if filter.min_value.value != null or filter.max_value.value != null -%}
+                            <li class="applied-filter-item">
+                              <a class="applied-filter-link applied-filter-remove" href="{{ filter.url_to_remove }}">
+                                <span>
+                                  <svg width="9" height="9" viewBox="0 0 10 10" fill="none">
+                                    <path d="M4.99999 5.63805L1.56815 9.07116L1.56817 9.07118L1.56568 9.07359C1.39129 9.2421 1.11478 9.24207 0.94039 9.07361L0.940374 9.07359C0.761654 8.9009 0.756713 8.61601 0.929333 8.43722L0.929312 8.4372L0.931765 8.43475L4.36371 5.00153L0.931765 1.56832C0.847411 1.48393 0.800012 1.3695 0.8 1.25017L4.99999 5.63805ZM4.99999 5.63805L8.43186 9.07119L8.43432 9.07364L8.43434 9.07362C8.6131 9.24635 8.89802 9.2414 9.07068 9.06258M4.99999 5.63805L8.9268 1.42689C9.02443 1.32923 9.02439 1.17087 8.92674 1.07321C8.87986 1.02635 8.81632 1.00003 8.75007 1M9.07068 9.06258L8.92684 8.9237L9.07067 9.06258C9.07067 9.06258 9.07068 9.06258 9.07068 9.06258ZM9.07068 9.06258C9.23909 8.88816 9.23912 8.61164 9.07065 8.43722L9.06827 8.43476L9.06825 8.43478L5.63627 5.00153M5.63627 5.00153L5.49493 5.14293L5.35348 5.00153L5.49493 4.86014L5.63627 5.00153ZM5.63627 5.00153L9.06825 1.56829C9.24398 1.39249 9.24388 1.10752 9.06816 0.931793L9.06814 0.931768C8.98381 0.847466 8.86952 0.800104 8.75034 0.8M8.75034 0.8L8.75007 1M8.75034 0.8C8.75028 0.8 8.75022 0.8 8.75016 0.8L8.75007 1M8.75034 0.8C8.63086 0.799836 8.51624 0.847314 8.43186 0.931875L8.75007 1M4.99999 4.36502L1.56838 0.932136C1.56833 0.932089 1.56829 0.932042 1.56824 0.931995L4.99999 4.36502ZM4.99999 4.36502L8.43163 0.932105L4.99999 4.36502ZM1.24993 0.8L1.24997 1L0.8 1.25013C0.799968 1.00164 1.00133 0.80013 1.24979 0.8C1.24984 0.8 1.24988 0.8 1.24993 0.8Z" fill="currentColor" stroke="currentColor" stroke-width="0.4"/>
+                                  </svg>
+                                </span>
+                                {%- if filter.min_value.value -%}
+                                  {{ filter.min_value.value | money }}
+                                {%- else -%}
+                                  {{ 0 | money }}
+                                {%- endif -%}
+                                -
+                                {%- if filter.max_value.value -%}
+                                  {{ filter.max_value.value | money }}
+                                {%- else -%}
+                                  {{ filter.range_max | money }}
+                                {%- endif -%}
+                              </a>
+                            </li>
+                          {%- endif -%}
+                        {%- endif -%}
+                      {%- endfor -%}
+                      {%- endfor -%}
+                    {% endcapture %}
+                    <div class="active-filters-wrapper{% if activefilter == blank %} hidden{% endif %}" data-active-filters>
+                    {% if activefilter != blank %}
+                    <ul class="list-inline applied-filters">
+                      {{ activefilter }}
+                      <li class="applied-filter-item">
+                        <a class="applied-filter-link applied-filter-remove"
+                          href="{{ clearAll }}" 
+                          applied-filter-cross-all
+                        >
+                          {{ 'templates.search.clear_all' | t }}
+                        </a>
+                      </li>
+                    </ul>
+                  {% endif %}
+                  </div>
+                  {% endif %}
+                  <div class="main-products-wrapper{% if section.settings.enable_filtering == false and search.filters.size > 0 %} filter-sidedrawer-disabled{% endif %}">
+                    {% if section.settings.enable_filtering %}
+                      {% render 'filter', block: section, results: search, source: 'search', clearAll: clearAll %}
+                    {% endif %}
+                    <div class="collection-products-grid-wrapper">
+                      <div class="row" data-products>
+                      {%- for item in search.results -%}
+                        {%- case item.object_type -%}
+                          {%- when 'product' -%}
+                          <div class="col-6 col-sm-6 col-md-3 col-lg-3">
+                            {%- capture current -%}{% cycle section.id: 1, 2, 3, 4 %}{%- endcapture -%}
+                            {%- assign placeholder_image = 'product-apparel-' | append: current -%}
+                            {% render 'card-product', placeholder_image: placeholder_image, cProduct: item, gridImageSize: settings.grid_image_size %}
+                          </div>
+                        {%- endcase -%}
+                      {%- endfor -%}
+                      {%- if paginate.pages > 1 -%}
+                        {% render 'pagination', paginate: paginate, anchor: '' %}
+                      {%- endif -%}
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                </div>
+            {% endif %}
+            {% if search.types contains 'article' %}
+               <div class="container-fluid">
+              <div class="main-search-result-articles {% if search.types contains 'article' %} active{% else %} hidden{% endif %}">
+                {% if search.results_count > 0 %}
+                  <div class="search-article-list">
+                    {%- for item in search.results -%}
+                      {%- case item.object_type -%}
+                        {%- when 'article' -%}
+                          {% liquid
+                            assign placeholder_image_index = forloop.index0 | modulo: 3 | plus: 1
+                            assign placeholder_image = 'blog-apparel-' | append: placeholder_image_index
+                          %}
+                          {% render 'card-blog', article: item, placeholder_image: placeholder_image, articleSearch: true %}
+                        {%- endcase -%}
+                    {%- endfor -%}
+                  </div>
+                {% else %}
+                  {% render 'empty-card', source: 'search' %}
+                {% endif %}
+                {% if search.types contains 'article' and paginate.pages > 1 %}
+                  {% render 'pagination', paginate: paginate, anchor: '' %}
+                {% endif %}
+              </div>
+            </div>
+            {% endif %}
+
+            {% if search.types contains 'page' %}
+              <div class="container-fluid">
+              <div
+                class="main-search-result-pages{% if search.types contains 'page' %} active{% else %} hidden{% endif %}"
+              >
+                {% if search.results_count > 0 %}
+                  <h6 class="main-search--result-heading">{{ 'templates.search.page_count' | t: count: search.results_count }}</h6>
+                  <div class="search-page-list">
+                    {%- for item in search.results -%}
+                      {%- case item.object_type -%}
+                        {%- when 'page' -%}
+                          <div class="search-page-item">
+                            <div class="search-page-icon">
+                              <svg viewBox="0 0 81 70" fill="none">
+                                <g ><path d="M80.6795 45.9243H66.3796L65.8459 0H0V55.894C0 59.6352 1.49553 63.2233 4.15672 65.8682C6.8188 68.5138 10.4291 70 14.1937 70H67.0198C70.682 69.8365 74.1418 68.2821 76.6838 65.6572C79.225 63.0324 80.6563 59.5367 80.6795 55.8937V45.9243ZM14.1937 65.7576C11.5614 65.7576 9.03699 64.7188 7.17533 62.8685C5.31428 61.019 4.26835 58.5103 4.26835 55.8943V4.24281H61.6834L62.11 45.9246H24.1179V55.8945C24.1179 58.5104 23.0727 61.0193 21.2109 62.8687C19.3498 64.7191 16.8258 65.7576 14.1937 65.7576ZM76.4112 55.8943C76.4112 58.5103 75.3652 61.0191 73.5043 62.8685C71.642 64.7188 69.1179 65.7576 66.4857 65.7576H24.3316C26.9489 63.1364 28.4081 59.5867 28.3871 55.8943V50.1667H76.4112V55.8943Z" fill="currentColor"/><path d="M14.8359 17.7119H42.0494V21.954H14.8359V17.7119Z" fill="currentColor"/>
+                                <path d="M14.8359 31.5H52.7213V35.7421H14.8359V31.5Z" fill="currentColor"/>
+                                </g>
+                              </svg>
+                            </div>
+                            <a href="{{ item.url }}" class="search-page-title heading-font text-large">
+                              {{- item.title -}}
+                            </a>
+                          </div>
+                      {%- endcase -%}
+                    {%- endfor -%}  
+                  </div>  
+                {% else %}
+                  {% render 'empty-card', source: 'search' %}
+                {% endif %}
+                {% if search.types contains 'page' and paginate.pages > 1 %}
+                  {% render 'pagination', paginate: paginate, anchor: '' %}
+                {% endif %}
+              </div>  
+              </div>
+            {% endif %}
+        {% endpaginate %}
+        {% else %}
+          {% render 'empty-card', source: 'search' %}
+        {%- endif -%}
+    </div>
+</div>
+
+<script src="{{ 'filter.js' | asset_url }}" defer></script>
+
+<style>
+  #shopify-section-{{ section.id }}{
+    --top-spacer: {{ section.settings.top_space_desktop }}px;
+    --bottom-spacer: {{ section.settings.bottom_space_desktop }}px;
+  }
+  @media only screen and (max-width:767px) {
+    #shopify-section-{{ section.id }}{
+      --top-spacer: {{ section.settings.top_space_mobile }}px;
+      --bottom-spacer: {{ section.settings.bottom_space_mobile }}px;
+    }
+  }
+</style>
+{% schema %}
+{
+  "name": "t:sections.main-search.name",
+  "tag": "section",
+  "class": "search-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:global.header.space_section.label"
+    },
+    {
+      "type": "range",
+      "id": "top_space_desktop",
+      "label": "t:global.top_space_desktop.label",
+      "default": 80,
+      "min": 0,
+      "max": 150,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "bottom_space_desktop",
+      "label": "t:global.bottom_space_desktop.label",
+      "default": 60,
+      "min": 0,
+      "max": 150,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "top_space_mobile",
+      "label": "t:global.top_space_mobile.label",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "bottom_space_mobile",
+      "label": "t:global.bottom_space_mobile.label",
+      "default": 30,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "default": true,
+      "label": "t:sections.main-search.settings.enable_filtering.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "default": true,
+      "label": "t:sections.main-search.settings.enable_sorting.label"
+    },
+    {
+      "type": "header",
+      "content": "t:global.header.color_section.label"
+    }, 
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "primary",
+      "label": "t:global.header.color_scheme.label"
+    }
+  ]
+}
+{% endschema %}

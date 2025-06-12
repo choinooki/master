@@ -1,0 +1,721 @@
+{% if section.index <= 2 %}
+    {{ 'best-selling-products.css' | asset_url | preload_tag: as: 'style' }}
+{% endif %}
+{{ 'best-selling-products.css' | asset_url | stylesheet_tag }}
+
+  <div class="section-container scheme-{{ section.settings.color_scheme }}">
+      <div class="best-selling-products-wrapper">
+        <div class="best-selling-products-image-wrapper animate-hvr">
+          <div class="best-selling-products-image media-wrapper media-overlay">
+            {%- liquid
+              if section.settings.image != blank
+              assign imageRatio = 1 | divided_by:  section.settings.image.aspect_ratio | times: 100 | append: '%'
+              else
+              assign imageRatio = 100 | append: '%'
+              endif
+            %} 
+            <div class="media-box best-selling-products-media" style="--image-ratio: {{ imageRatio }};">
+              {%- liquid 
+                if section.settings.image != blank
+                render 'image', image: section.settings.image 
+                else 
+                  echo 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg'
+                endif 
+              -%}
+            </div>
+          </div>
+          <div class="best-selling-products-image-overlay-content">
+          {% if section.settings.heading!= blank %}
+            {%- capture markers_prefix -%}
+              <span class="markers-text {{ section.settings.markers_font }}">
+              {%- endcapture -%}
+              {%- capture markers_suffix -%}
+              </span>
+              {%- endcapture -%} 
+              
+            <{{ section.settings.seo_heading }} class="best-selling-products-image-overlay-heading {{ section.settings.heading_size }}" data-aos="fade-up"
+            data-aos-duration="100"
+                 data-aos-easing="linear">
+              {{ section.settings.heading | replace: "[", markers_prefix | replace: "]", markers_suffix }}
+            </{{ section.settings.seo_heading }}>
+          {% endif %}
+          {% if section.settings.description != blank %}
+            <p class="best-selling-products-image-overlay-text" data-aos="fade-up"
+            data-aos-duration="200"
+                 data-aos-easing="linear">{{ section.settings.description | newline_to_br }}</p>
+          {% endif %}  
+          {% if section.settings.btn_text != blank %}
+            <div class="best-selling-products-image-overlay-btn" data-aos="fade-up"
+            data-aos-duration="300"
+                 data-aos-easing="linear">
+              <a href="{{ section.settings.btn_link }}" class="{% if section.settings.button_syle_1 == 'link' %}hyperlink text-underline {% elsif section.settings.button_syle_1 == 'outline' %} outline-button button {% else %} button {% endif %} {{ section.settings.button_size_1 }}-btn" title="{{ section.settings.btn_text }}">
+                <span>{{ section.settings.btn_text }}</span></a>
+            </div>
+          {% endif %}
+          </div>
+        </div>
+        <div class="best-selling-products-content-wrapper">
+          <div class="best-selling-products-content">
+            {% for block in section.blocks %}
+              {% case block.type %}
+                {% when 'heading' %}
+                  {% if block.settings.heading!= blank %}
+                    {%- capture markers_prefix -%}
+                      <span class="markers-text {{ block.settings.markers_font }}">
+                      {%- endcapture -%}
+                      {%- capture markers_suffix -%}
+                      </span>
+                      {%- endcapture -%}
+                      
+                    <{{ block.settings.seo_heading }} class="best-selling-products-title {{ block.settings.heading_size }}" {{ block.shopify_attributes }} data-aos="fade-up"
+                    data-aos-duration="200" data-aos-easing="linear">
+                      {{ block.settings.heading | replace: "[", markers_prefix | replace: "]", markers_suffix }}
+                    </{{ block.settings.seo_heading }}>
+                  {% endif %}
+                {% when 'text' %}
+                  {% if block.settings.text != blank %}
+                    <p class="best-selling-products-desc text-{{ block.settings.text_size }}" {{ block.shopify_attributes }} data-aos="fade-up"
+                    data-aos-duration="300"
+                         data-aos-easing="linear">{{ block.settings.text | newline_to_br }}</p>
+                  {% endif %}
+                {% when 'button' %}
+                  {% if block.settings.btn_text != blank %}
+                  <div class="best-selling-products-btn" {{ block.shopify_attributes }} data-aos="fade-up"
+                  data-aos-duration="400"
+                       data-aos-easing="linear">
+                    <a href="{{ block.settings.btn_url }}" class="{% if block.settings.button_syle_1 == 'link' %}hyperlink text-underline {% elsif block.settings.button_syle_1 == 'outline' %} outline-button button {% else %} button {% endif %} {{ block.settings.btn_size }}-btn" title="{{ block.settings.btn_text }}"><span>{{ block.settings.btn_text }}</span></a>
+                  </div>
+                  {% endif %}
+                {% when 'products' %}
+                  <div class="best-selling-products-list{%if block.settings.products_style == 'stacked' %} best-selling-products-list-stacked{% endif %}"{%if block.settings.products_style == 'carousel' %} slider-progress data-section-id="progress-{{ section.id }}" data-slick='{
+                    "infinite": true,
+                    {% if block.settings.products != blank and block.settings.products.count == 2 %}
+                    "slidesToShow":2,
+                    {% else %}
+                     "slidesToShow":3,
+                    {% endif %}
+                    "slidesToScroll": 1,
+                    "autoplay":false,
+                    "arrows": true,
+                    "responsive": [
+                     {
+                        "breakpoint": 1440,
+                        "settings": {
+                          "slidesToShow": 2   
+                        }
+                      }, 
+                    {
+                        "breakpoint": 991,
+                        "settings": {
+                          "slidesToShow": 2   
+                        }
+                      },
+                      {
+                        "breakpoint": 767,
+                        "settings": {
+                            "slidesToShow": 2      
+                        }
+                      },
+                      {
+                        "breakpoint": 576,
+                        "settings": {
+                            "slidesToShow": 1      
+                        }
+                      }
+                    ]
+                  }'{% endif %}>
+                    {% if block.settings.products != blank %}
+                      {% for product in block.settings.products %}
+                        {%  assign current_variant = cProduct.selected_or_first_available_variant %}
+                          <div class="best-selling-products-item">
+                            <div class="best-selling-products-item-inner">
+                            <div class="best-selling-products-img">
+                              <div class="media-box" style="--image-ratio: 100%">
+                                {%- if product.featured_media != blank -%}
+                                  {%- render 'image', image: product.featured_media.preview_image -%}
+                                {% else %}
+                                  {{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                                {% endif %}
+                              </div>
+                            </div>
+                            <div class="best-selling-products-img-info">
+                              <a href="{{ product.url }}" title="{{ product.title | strip_html }}" class="product-title {{ settings.font_type }}-font"> {{ product.title }}</a>
+                              {% render 'product-card-price', cProduct : product, current_variant : current_variant   %}
+                              <div class="product-shop-btn">
+                                <a href="{{ product.url }}" class="text-underline">Shop Now</a>
+                              </div>
+                            </div>
+                            </div>
+                          </div>
+                    {% endfor %}
+                  {% else %}
+                  {% for i in (0..3) %}
+                      <div class="best-selling-products-item">
+                        <div class="best-selling-products-item-inner">
+                        <div class="best-selling-products-img">
+                          <div class="media-box" style="--image-ratio: 100%">
+                            {%- capture current -%}{% cycle section.id: 1, 2, 3, 4 %}{%- endcapture -%}
+                            {%- assign placeholder_image = 'product-apparel-' | append: current -%}
+                            {{ placeholder_image | placeholder_svg_tag: 'placeholder-svg' }}
+                          </div>
+                        </div>
+                        <div class="best-selling-products-img-info">
+                          <div class="product-title {{ settings.font_type }}-font">{{ 'products.product.onboarding.title' | t }}</div>
+                          {% render 'product-card-price' %}
+                         </div>
+                         </div>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                </div>
+                {%if block.settings.products_style == 'carousel' %}
+                  <div class="slider-progress progress-{{ section.id }}"></div>
+                  
+                {% endif %}
+              {% endcase %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+  </div>
+  <style>
+    #shopify-section-{{ section.id }}.shopify-section {
+      --top-spacer:{{ section.settings.top_space_desktop }}px;
+      --bottom-spacer:{{ section.settings.bottom_space_desktop }}px;
+      --overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+    }
+    @media only screen and (max-width:767px) {
+      #shopify-section-{{ section.id }}.shopify-section{
+        --top-spacer:{{ section.settings.top_space_mobile }}px;
+        --bottom-spacer:{{ section.settings.bottom_space_mobile }}px;
+      }
+    }
+    {% if section.settings.section_visibility == 'large' %}
+      @media (max-width: 767px) {
+        #shopify-section-{{ section.id }}{
+          display: none !important;
+        }
+      }
+    {% elsif section.settings.section_visibility == 'small' %}
+      @media (min-width: 768px) {
+        #shopify-section-{{ section.id }}{
+          display: none !important;
+        }
+      }
+    {% endif %}
+  
+  </style>
+{% schema %}
+{
+  "name": "t:sections.best-selling-products.name",
+  "tag": "section",
+  "class": "best-selling-products",
+  "disabled_on":{
+    "groups":["header", "footer", "custom.Overlay"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:global.header.space_section.label"
+    },
+    {
+      "type": "range",
+      "id": "top_space_desktop",
+      "label": "t:global.top_space_desktop.label",
+      "default": 70,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "bottom_space_desktop",
+      "label": "t:global.bottom_space_desktop.label",
+      "default": 70,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "top_space_mobile",
+      "label": "t:global.top_space_mobile.label",
+      "default": 30,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "bottom_space_mobile",
+      "label": "t:global.bottom_space_mobile.label",
+      "default": 30,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+        "type": "select",
+        "id": "section_visibility",
+        "label": "t:global.common.section_visibility.label",
+        "default": "always",
+        "options": [
+          {
+            "label": "t:global.common.section_visibility.options.always",
+            "value": "always"
+          },
+          {
+            "label": "t:global.common.section_visibility.options.small",
+            "value": "small"
+          },
+          {
+            "label": "t:global.common.section_visibility.options.large",
+            "value": "large"
+          }
+        ]
+    },
+    {
+      "type": "header",
+      "content": "t:global.common.general_labels.image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:global.common.general_labels.image"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "t:global.common.general_labels.overlay_opacity",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step":1,
+      "unit": "%"
+    },
+    {
+        "type": "header",
+        "content": "t:global.header.header_section.label"
+      },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:global.common.general_labels.heading",
+      "default":"Heading here",
+      "info": "t:global.common.general_labels.heading_info"
+    },
+    {
+      "type": "select",
+      "id": "markers_font",
+      "label": "t:global.common.markers_font.label",
+      "info": "t:global.common.markers_font.info",
+      "default": "accent-font",
+      "options": [
+        {
+          "label": "t:global.common.markers_font.accent-font.label",
+          "value": "accent-font"
+        },
+        {
+          "label": "t:global.common.markers_font.body-font.label",
+          "value": "body-font"
+        },
+        {
+          "label": "t:global.common.markers_font.heading-font.label",
+          "value": "heading-font"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "t:global.common.general_labels.heading_size",
+      "default": "h2",
+      "options": [
+        {
+          "value": "h1",
+          "label": "H1"
+        },
+        {
+          "value": "h2",
+          "label": "H2"
+        },
+        {
+          "value": "h3",
+          "label": "H3"
+        },
+        {
+          "value": "h4",
+          "label": "H4"
+        },
+        {
+          "value": "h5",
+          "label": "H5"
+        },
+        {
+          "value": "h6",
+          "label": "H6"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "seo_heading",
+      "label": "t:global.common.general_labels.heading_tag",
+      "default": "h2",
+      "info":"t:global.common.infos.seo_heading.label",
+      "options": [
+        {
+          "value": "h1",
+          "label": "H1"
+        },
+        {
+          "value": "h2",
+          "label": "H2"
+        },
+        {
+          "value": "h3",
+          "label": "H3"
+        },
+        {
+          "value": "h4",
+          "label": "H4"
+        },
+        {
+          "value": "h5",
+          "label": "H5"
+        },
+        {
+          "value": "h6",
+          "label": "H6"
+        }
+      ]
+    },
+    {
+      "type":"textarea",
+      "id":"description",
+      "label":"t:global.common.general_labels.description",
+      "default":"Use this description about your brand with your customers."
+    },
+    {
+      "type": "header",
+      "content": "t:global.header.button_section.label"
+      },
+      {
+      "type": "text",
+      "id": "btn_text",
+      "label": "t:global.common.general_labels.text",
+      "default": "Shop now"
+      },
+      {
+      "type": "url",
+      "id": "btn_link",
+      "label": "t:global.common.general_labels.link"
+      },
+      {
+      "type": "select",
+      "id": "button_syle_1",
+      "label": "t:global.common.style.label",
+      "default": "solid",
+      "options": [
+        {
+          "value": "solid",
+          "label": "t:global.common.style.value.solid"
+        },
+        {
+          "value": "outline",
+          "label": "t:global.common.style.value.outline"
+        },
+        {
+          "value": "link",
+          "label": "t:global.common.style.value.link"
+        }
+      ]
+      },
+      {
+      "type": "select",
+      "id": "button_size_1",
+      "label": "t:global.common.size.label",
+      "default": "medium",
+      "options": [
+        {
+          "value": "regular",
+          "label": "t:global.common.size.value.regular"
+        },
+        {
+          "value": "small",
+          "label": "t:global.common.size.value.small"
+        },
+        {
+          "value": "medium",
+          "label": "t:global.common.size.value.medium"
+        },
+        {
+          "value": "large",
+          "label": "t:global.common.size.value.large"
+        }
+      ]
+      },
+    {
+      "type": "header",
+      "content": "t:global.header.color_section.label"
+    }, 
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "secondary",
+      "label": "t:global.header.color_scheme.label"
+    }
+],
+"blocks": [
+  {
+    "type": "heading",
+    "name": "t:sections.best-selling-products.blocks.heading.name",
+    "limit": 1,
+    "settings": [
+      {
+        "type": "inline_richtext",
+        "id": "heading",
+        "default": "Heading",
+        "label": "t:global.common.general_labels.heading",
+        "info": "t:global.common.general_labels.heading_info"
+      },
+      {
+        "type": "select",
+        "id": "markers_font",
+        "label": "t:global.common.markers_font.label",
+        "info": "t:global.common.markers_font.info",
+        "default": "accent-font",
+        "options": [
+          {
+            "label": "t:global.common.markers_font.accent-font.label",
+            "value": "accent-font"
+          },
+          {
+            "label": "t:global.common.markers_font.body-font.label",
+            "value": "body-font"
+          },
+          {
+            "label": "t:global.common.markers_font.heading-font.label",
+            "value": "heading-font"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "heading_size",
+        "label": "t:global.common.general_labels.heading_size",
+        "default": "h1",
+        "options": [
+          {
+            "value": "h1",
+            "label": "H1"
+          },
+          {
+            "value": "h2",
+            "label": "H2"
+          },
+          {
+            "value": "h3",
+            "label": "H3"
+          },
+          {
+            "value": "h4",
+            "label": "H4"
+          },
+          {
+            "value": "h5",
+            "label": "H5"
+          },
+          {
+            "value": "h6",
+            "label": "H6"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "seo_heading",
+        "label": "t:global.common.general_labels.heading_tag",
+        "info": "t:global.common.infos.seo_heading.label",
+         "default": "h2",
+        "options": [
+          {
+            "value": "h1",
+            "label": "H1"
+          },
+          {
+            "value": "h2",
+            "label": "H2"
+          },
+          {
+            "value": "h3",
+            "label": "H3"
+          },
+          {
+            "value": "h4",
+            "label": "H4"
+          },
+          {
+            "value": "h5",
+            "label": "H5"
+          },
+          {
+            "value": "h6",
+            "label": "H6"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "text",
+    "name": "t:sections.best-selling-products.blocks.text.name",
+    "settings": [
+      {
+        "type": "textarea",
+        "id": "text",
+        "default": "Pair text with an image to focus on your chosen product.",
+        "label": "t:global.common.general_labels.text"
+      },
+      {
+        "type": "select",
+        "id": "text_size",
+        "options": [
+          {
+            "value": "small",
+            "label": "t:global.common.size.value.small"
+          },
+          {
+            "value": "regular",
+            "label": "t:global.common.size.value.regular"
+          },
+          {
+            "value": "medium",
+            "label": "t:global.common.size.value.medium"
+          },
+          {
+            "value": "large",
+            "label": "t:global.common.size.value.large"
+          }
+        ],
+        "default": "medium",
+        "label": "t:global.common.general_labels.text_size"
+      }
+    ]
+  },
+  {
+    "type": "button",
+    "name": "t:sections.best-selling-products.blocks.button.name",
+    "limit": 1,
+    "settings": [
+      {
+        "type": "text",
+        "id": "btn_text",
+        "default": "View details",
+        "label": "t:global.common.general_labels.text"
+      },
+      {
+        "type": "url",
+        "id": "btn_url",
+        "default":"/collections/all",
+        "label": "t:global.common.general_labels.link"
+      },
+      {
+        "type": "select",
+        "id": "button_syle_1",
+        "label": "t:global.common.style.label",
+        "default": "link",
+        "options": [
+          {
+            "value": "solid",
+            "label": "t:global.common.style.value.solid"
+          },
+          {
+            "value": "outline",
+            "label": "t:global.common.style.value.outline"
+          },
+          {
+            "value": "link",
+            "label": "t:global.common.style.value.link"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "btn_size",
+        "default": "regular",
+        "label": "t:global.common.size.label",
+        "options": [
+          {
+            "value": "regular",
+            "label": "t:global.common.size.value.regular"
+          },
+          {
+            "value": "small",
+            "label": "t:global.common.size.value.small"
+          },
+          {
+            "value": "medium",
+            "label": "t:global.common.size.value.medium"
+          },
+          {
+            "value": "large",
+            "label": "t:global.common.size.value.large"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "products",
+    "name": "t:sections.best-selling-products.blocks.products.name",
+    "limit": 1,
+    "settings": [
+      {
+        "type": "select",
+        "id": "products_style",
+        "default": "carousel",
+        "label": "t:sections.featured-collection.settings.products_style.label",
+        "options":[
+          {
+            "value": "carousel",
+            "label": "t:sections.featured-collection.settings.products_style.options.carousel.label"
+          },
+          {
+            "value": "stacked",
+            "label": "t:sections.featured-collection.settings.products_style.options.stacked.label"
+          }
+        ]
+      },
+      {
+        "type": "product_list",
+        "id": "products",
+        "label": "t:sections.best-selling-products.blocks.products.settings.products.label",
+        "limit": 8
+      }
+    ]
+  }
+],
+"presets": [
+  {
+    "name": "t:sections.best-selling-products.presets.name",
+    "blocks": [
+      {
+        "type": "heading"
+      },
+      {
+        "type": "text"
+      },
+      {
+        "type": "button"
+      },
+      {
+        "type": "products"
+      }
+      ]
+  }
+]
+} 
+{% endschema %}
+
+

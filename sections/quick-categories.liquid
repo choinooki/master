@@ -1,0 +1,316 @@
+{% liquid
+ assign sectionshow = false
+ if section.blocks.size > 0 and section.settings.button_text != blank
+   if template.name == 'index' or section.settings.show_quick_categories_home_page == false
+     assign sectionshow = true
+   endif
+ endif
+ %}
+{% if sectionshow %}
+{{ 'quick-categories.css' | asset_url | preload_tag: as: 'style' }}
+{{ 'quick-categories.css' | asset_url | stylesheet_tag }}
+
+{% assign get_total_count = section.blocks.size %}
+{% assign get_center_point = get_total_count | divided_by : 2 %}
+{% if get_center_point != 0 %}
+  {% assign get_center_point = get_center_point | plus : 1 %}
+{% endif %}
+
+<div class="section-container quick-categories-main-wrapper scheme-{{ section.settings.color_scheme }}" style="display:none;">
+<div class="quick-categories-main-wrapper-inner" style="--items-width:0px;">
+  <div class="quick-categories-button">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path fill-rule="evenodd" clip-rule="evenodd"
+        d="M13.5144 2.17413L13.5287 2.18847L13.8115 2.47131L13.8259 2.48566C14.0777 2.73746 14.2879 2.94763 14.4455 3.13336C14.61 3.32707 14.7465 3.52683 14.8245 3.76683C14.9441 4.13505 14.9441 4.53168 14.8245 4.89989C14.7465 5.13989 14.61 5.33965 14.4455 5.53337C14.2879 5.71909 14.0777 5.92927 13.8259 6.18107L13.8115 6.19541L13.5287 6.47825L13.5144 6.49259C13.2627 6.74443 13.0524 6.95457 12.8667 7.11224C12.6729 7.27671 12.4732 7.41317 12.2332 7.49117C11.865 7.61084 11.4683 7.61084 11.1001 7.49117C10.8601 7.41317 10.6604 7.27671 10.4667 7.11224C10.2809 6.95457 10.0707 6.74437 9.81893 6.49259L9.8046 6.47825L9.5218 6.19541L9.5074 6.18107C9.2556 5.92927 9.04547 5.71909 8.8878 5.53337C8.72333 5.33965 8.5868 5.13989 8.50887 4.89989C8.3892 4.53168 8.3892 4.13505 8.50887 3.76683C8.5868 3.52683 8.72333 3.32707 8.8878 3.13336C9.04547 2.94763 9.2556 2.73746 9.5074 2.48566L9.5218 2.47131L9.8046 2.18847L9.81893 2.17413C10.0707 1.92231 10.2809 1.71214 10.4667 1.55447C10.6604 1.39001 10.8601 1.25353 11.1001 1.17555C11.4683 1.05591 11.865 1.05591 12.2332 1.17555C12.4732 1.25353 12.6729 1.39001 12.8667 1.55447C13.0524 1.71214 13.2626 1.92231 13.5144 2.17413ZM4.11305 1.5H4.13333H4.53333H4.55363C4.90973 1.49999 5.20696 1.49999 5.44978 1.51983C5.70304 1.54052 5.94081 1.58526 6.16565 1.69982C6.51061 1.87559 6.79107 2.15605 6.96687 2.50102C7.0814 2.72586 7.12613 2.96363 7.14687 3.21689C7.16667 3.45971 7.16667 3.75693 7.16667 4.11302V4.13333V4.53333V4.55362C7.16667 4.90971 7.16667 5.20697 7.14687 5.44978C7.12613 5.70304 7.0814 5.94081 6.96687 6.16565C6.79107 6.51061 6.51061 6.79111 6.16565 6.96684C5.94081 7.08144 5.70304 7.12617 5.44978 7.14684C5.20696 7.16671 4.90973 7.16671 4.55362 7.16664H4.53333H4.13333H4.11305C3.75695 7.16671 3.45971 7.16671 3.21689 7.14684C2.96363 7.12617 2.72586 7.08144 2.50102 6.96684C2.15605 6.79111 1.87559 6.51061 1.69982 6.16565C1.58526 5.94081 1.54052 5.70304 1.51983 5.44978C1.49999 5.20697 1.49999 4.90974 1.5 4.55365V4.53333V4.13333V4.11305C1.49999 3.75696 1.49999 3.45971 1.51983 3.21689C1.54052 2.96363 1.58526 2.72586 1.69982 2.50102C1.87559 2.15605 2.15605 1.87559 2.50102 1.69982C2.72586 1.58526 2.96363 1.54052 3.21689 1.51983C3.45971 1.49999 3.75694 1.49999 4.11305 1.5ZM4.13333 8.83331H4.11305C3.75694 8.83331 3.45971 8.83331 3.21689 8.85317C2.96363 8.87384 2.72586 8.91857 2.50102 9.03317C2.15605 9.20891 1.87559 9.48937 1.69982 9.83437C1.58526 10.0592 1.54052 10.297 1.51983 10.5502C1.49999 10.793 1.49999 11.0902 1.5 11.4464V11.4666V11.8666V11.887C1.49999 12.243 1.49999 12.5403 1.51983 12.7831C1.54052 13.0364 1.58526 13.2742 1.69982 13.499C1.87559 13.844 2.15605 14.1244 2.50102 14.3002C2.72586 14.4148 2.96363 14.4595 3.21689 14.4802C3.4597 14.5 3.75691 14.5 4.11299 14.5H4.13333H4.53333H4.55362C4.9097 14.5 5.20697 14.5 5.44978 14.4802C5.70304 14.4595 5.94081 14.4148 6.16565 14.3002C6.51061 14.1244 6.79107 13.844 6.96687 13.499C7.0814 13.2742 7.12613 13.0364 7.14687 12.7831C7.16667 12.5403 7.16667 12.243 7.16667 11.887V11.8666V11.4666V11.4464C7.16667 11.0902 7.16667 10.793 7.14687 10.5502C7.12613 10.297 7.0814 10.0592 6.96687 9.83437C6.79107 9.48937 6.51061 9.20891 6.16565 9.03317C5.94081 8.91857 5.70304 8.87384 5.44978 8.85317C5.20696 8.83331 4.90973 8.83331 4.55363 8.83331H4.53333H4.13333ZM11.4464 8.83331H11.4667H11.8667H11.8869C12.2431 8.83331 12.5403 8.83331 12.7831 8.85317C13.0364 8.87384 13.2741 8.91857 13.499 9.03317C13.8439 9.20891 14.1244 9.48937 14.3002 9.83437C14.4147 10.0592 14.4595 10.297 14.4802 10.5502C14.5 10.793 14.5 11.0903 14.5 11.4464V11.4666V11.8666V11.887C14.5 12.243 14.5 12.5403 14.4802 12.7831C14.4595 13.0364 14.4147 13.2742 14.3002 13.499C14.1244 13.844 13.8439 14.1244 13.499 14.3002C13.2741 14.4148 13.0364 14.4595 12.7831 14.4802C12.5403 14.5 12.2431 14.5 11.887 14.5H11.8667H11.4667H11.4464C11.0903 14.5 10.793 14.5 10.5502 14.4802C10.2969 14.4595 10.0592 14.4148 9.83433 14.3002C9.4894 14.1244 9.20893 13.844 9.03313 13.499C8.9186 13.2742 8.87387 13.0364 8.85313 12.7831C8.83333 12.5403 8.83333 12.243 8.83333 11.887V11.8666V11.4666V11.4464C8.83333 11.0903 8.83333 10.793 8.85313 10.5502C8.87387 10.297 8.9186 10.0592 9.03313 9.83437C9.20893 9.48937 9.4894 9.20891 9.83433 9.03317C10.0592 8.91857 10.2969 8.87384 10.5502 8.85317C10.7931 8.83331 11.0903 8.83331 11.4464 8.83331Z"
+        fill="currentColor" />
+    </svg>
+
+  <span class="quick-categories-trigger-button body-font">{{ section.settings.button_text }}</span>
+  </div>
+  <div class="quick-categories-content">
+      {% for block in section.blocks %}
+      {% assign collection = block.settings.collection %}
+      <div class="quick-categories-content-item{% if get_center_point == forloop.index %} center-categories{% endif %}">
+          <a href="{{ collection.url }}" tabindex="0">
+              <div class="quick-categories-content-item-icon">
+                  <div class="media-box" style="--image-ratio:100%">
+                  {% if block.settings.image != blank %}
+                  {% render 'image', image: block.settings.image %}
+                  
+                  {% elsif collection.featured_image != blank %}
+                      {% render 'image', image: collection.featured_image %}
+                  {% else %}
+                      {{ 'collection-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }} 
+                  {% endif %}    
+                 </div>
+                 {% if collection.title != blank %}
+                    <div class="tool-tip body-font text-small">
+                        {{ collection.title }}    
+                    </div>
+                 {% endif %}
+              </div>
+          </a>
+      </div>
+      {% endfor %}
+  </div>
+</div>
+</div>
+<script>  
+    triggerButton = document.querySelector('.quick-categories-trigger-button');
+    mainwrapperSection = document.querySelector('.quick-categories-main-wrapper');
+    content = document.querySelector('.quick-categories-content');
+    wrapperInner = document.querySelector('.quick-categories-main-wrapper-inner');
+    
+    contentWidth = 80;
+    cooldown = false; 
+    let mouseLeaveTimeout; // For handling delayed mouseleave
+    
+    mainwrapperSection.style.setProperty('width', '200px'); // Start with a minimum width of 200px
+    
+    // Check if the device is mobile
+    function checkIsMobile() {
+      return window.matchMedia("(max-width: 768px)").matches;
+    }
+    
+    // Calculate the total width of all content items
+    function calculateContentWidth() {
+      const innerDivs = content.querySelectorAll('.quick-categories-content-item');
+      const totalDivs = innerDivs.length;
+      return totalDivs * contentWidth;
+    }
+    
+    // Expand the content
+    function expandContent() {
+      if (cooldown) return;
+    
+      const content_width = calculateContentWidth();
+      mainwrapperSection.style.setProperty('width', `${content_width}px`); // Set the actual width
+      wrapperInner.classList.add('show-content');
+      wrapperInner.style.setProperty('--items-width', `${contentWidth}px`);
+    
+      cooldown = true;
+      setTimeout(() => {
+        cooldown = false;
+      }, 600);
+    }
+    
+    // Collapse the content
+    function collapseContent() {
+      wrapperInner.style.setProperty('--items-width', `0px`);
+      mainwrapperSection.style.setProperty('width', `200px`);
+      wrapperInner.classList.remove('show-content');
+      cooldown = false;
+    }
+    
+    // Mobile event: Toggle expand/collapse on click
+    function toggleMobileExpandCollapse(e) {
+      if (wrapperInner.classList.contains('show-content')) {
+        collapseContent();
+      } else {
+        expandContent();
+      }
+      e.stopPropagation();
+    }
+    
+    // Collapse content when clicking outside of the wrapper
+    function collapseOnClickOutside(e) {
+      if (!wrapperInner.contains(e.target)) {
+        collapseContent();
+      }
+    }
+    
+    // Apply event listeners based on the screen size
+    function applyEvents() {
+      const isMobile = checkIsMobile();
+    
+      if (isMobile) {
+        contentWidth = 68;  // Adjust content width for mobile
+        wrapperInner.removeEventListener('mouseenter', expandContent);
+        wrapperInner.removeEventListener('mouseleave', delayedCollapseContent);
+    
+        // For mobile, use click to expand/collapse
+        wrapperInner.addEventListener('click', toggleMobileExpandCollapse);
+        document.addEventListener('click', collapseOnClickOutside);
+      } else {
+        contentWidth = 80;  // Adjust content width for desktop
+        wrapperInner.removeEventListener('click', toggleMobileExpandCollapse);
+        document.removeEventListener('click', collapseOnClickOutside);
+    
+        // For desktop, use hover to expand/collapse
+        wrapperInner.addEventListener('mouseenter', expandContent);
+        wrapperInner.addEventListener('mouseleave', delayedCollapseContent);
+      }
+    }
+    
+    // Delayed collapse function to prevent flickering when hovering over edges
+    function delayedCollapseContent() {
+      clearTimeout(mouseLeaveTimeout); // Clear any previous timeouts to prevent redundant actions
+      mouseLeaveTimeout = setTimeout(() => {
+        collapseContent(); // Only collapse if the mouse has left after the timeout
+      }, 200); // Adjust this delay as needed (200ms is usually good)
+    }
+    
+    // Throttle resize event to avoid excessive calls
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        applyEvents();
+      }, 150); // Delay of 150ms to prevent excessive calls
+    });
+    
+    // Initial event application
+    applyEvents();
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  const footer = document.querySelector('footer');
+  const mainContent = document.querySelector('.main-content');
+  const handleScroll = () => {
+    const scrollTop = window.scrollY || window.pageYOffset;
+    if (!footer.classList.contains('is-visible')) {
+      if (scrollTop > 300) {
+        mainwrapperSection.style.display = 'flex';
+      } else {
+        mainwrapperSection.style.display = 'none';
+      }
+    }
+  };
+  if (mainContent) {
+    const rect = mainContent.getBoundingClientRect();
+    const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+    if (rect.bottom <= windowHeight) {
+      mainwrapperSection.style.display = 'none';
+      footer.classList.add('is-visible');
+    } else {
+      footer.classList.remove('is-visible');
+      handleScroll();
+    }
+  }
+  document.addEventListener('scroll', function() {
+    if (mainContent) {
+        const rect = mainContent.getBoundingClientRect();
+        const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+        if (rect.bottom <= windowHeight) {
+          mainwrapperSection.style.display = 'none';
+          footer.classList.add('is-visible');
+        } else {
+          footer.classList.remove('is-visible');
+          handleScroll();
+        }
+    }
+  });
+});
+
+if (Shopify.designMode) {
+  document.addEventListener("shopify:section:load", function(section) {
+    triggerButton = document.querySelector('.quick-categories-trigger-button');
+    mainwrapperSection = document.querySelector('.quick-categories-main-wrapper');
+    content = document.querySelector('.quick-categories-content');
+    wrapperInner = document.querySelector('.quick-categories-main-wrapper-inner');
+    
+    let contentWidth = 80;
+   checkIsMobile();
+   calculateContentWidth();
+   expandContent();
+   collapseContent();
+   toggleMobileExpandCollapse(section);
+   collapseOnClickOutside(section);
+    mainwrapperSection.style.setProperty('width', '200px');
+    applyEvents();
+    
+    window.addEventListener('resize', () => {
+      applyEvents();
+    });
+    const footer = document.querySelector('footer');
+    const mainContent = document.querySelector('.main-content');
+    const handleScroll = () => {
+      const scrollTop = window.scrollY || window.pageYOffset;
+      if (!footer.classList.contains('is-visible')) {
+        if (scrollTop > 300) {
+          mainwrapperSection.style.display = 'flex';
+        } else {
+          mainwrapperSection.style.display = 'none';
+        }
+      }
+    };
+    if (mainContent) { 
+      const rect = mainContent.getBoundingClientRect();
+      const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+      if (rect.bottom <= windowHeight) {
+        mainwrapperSection.style.display = 'none';
+        footer.classList.add('is-visible');
+      } else {
+        footer.classList.remove('is-visible');
+        handleScroll();
+      }
+    }
+    document.addEventListener('scroll', function() {
+      if (mainContent) {
+          const rect = mainContent.getBoundingClientRect();
+          const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+          if (rect.bottom <= windowHeight) {
+            mainwrapperSection.style.display = 'none';
+            footer.classList.add('is-visible');
+          } else {
+            footer.classList.remove('is-visible');
+            handleScroll();
+          }
+      }
+    });
+  });
+
+}
+  </script>
+{% endif %}
+{% schema %}
+{
+  "name": "t:sections.quick_categories.name",
+  "class": "quick-categories-section",
+  "max_blocks": 7,
+  "disabled_on": {
+    "groups": ["footer"]
+  },
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "primary",
+      "label": "t:global.header.color_scheme.label"
+    },
+    {
+        "type": "checkbox",
+        "id": "show_quick_categories_home_page",
+        "label": "t:sections.quick_categories.settings.show_quick_categories_home_page.label",
+        "default": false
+    },
+    {
+        "type": "text",
+        "id": "button_text",
+        "label": "t:sections.quick_categories.settings.button_text.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "categories",
+      "name": "t:sections.quick_categories.blocks.categories.name",
+      "settings": [
+        {
+            "type": "collection",
+            "id": "collection",
+            "label": "t:sections.quick_categories.blocks.categories.collection.label"
+        },
+        {
+            "type": "image_picker",
+            "id": "image",
+            "label": "t:sections.quick_categories.blocks.categories.image.label"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

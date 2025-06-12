@@ -1,0 +1,102 @@
+
+{% assign current_variant = product.selected_or_first_available_variant %}
+{% render 'quick-view', quickView: true, product: product, section: section, current_variant: current_variant %}
+
+{% schema %}
+{
+  "name":"t:sections.product-quick-view.name" ,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:sections.product-quick-view.settings.header"
+    }
+  ],
+  "blocks":[
+    {
+      "type": "@app"
+    },
+    {
+        "type":"title",
+        "name":"t:sections.product-quick-view.blocks.title.label",
+        "limit":1   
+    },
+    {
+        "type":"sku",
+        "name":"t:sections.product-quick-view.blocks.sku.label",
+        "limit":1
+    },
+    {
+        "type":"price",
+        "name":"t:sections.product-quick-view.blocks.price.label",
+        "limit":1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "hide_shipping_content",
+            "label": "t:sections.product-quick-view.blocks.price.hide_shipping_content.label",
+            "default": true
+          }
+        ] 
+    },
+    {
+      "type": "text",
+      "name": "t:sections.product-quick-view.blocks.text.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "t:sections.product-quick-view.blocks.text.label",
+          "default":"Add text here."
+        }
+      ]
+    },
+    {
+        "type": "variant",
+        "name": "t:sections.product-quick-view.blocks.variant.label",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "select",
+            "id": "option_style",
+            "label": "t:sections.product-quick-view.blocks.variant.option_style.label",
+            "options": [
+              {
+                "value": "dropdown",
+                "label": "t:sections.product-quick-view.blocks.variant.option_style.options.dropdown.label"
+              },
+              {
+                "value": "swatch",
+                "label": "t:sections.product-quick-view.blocks.variant.option_style.options.swatch.label"
+              }
+            ],
+            "default": "swatch"
+          }
+        ]    
+    },
+    {
+        "type": "quantity_selector",
+        "name": "t:sections.product-quick-view.blocks.quantity_selector.label",
+        "limit":1
+    },
+    {
+        "type": "button",
+        "name": "t:sections.product-quick-view.blocks.button.label",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "dynamic_checkout_btn",
+            "default": true,
+            "label": "t:sections.product-quick-view.blocks.button.dynamic_checkout_btn.label"
+          },
+          {
+            "type": "checkbox",
+            "id": "checkout_btn_second_row",
+            "default": true,
+            "label": "t:sections.featured-product.blocks.buy_buttons.settings.checkout_btn_second_row.label"
+          }
+        ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,279 @@
+{% if section.index <= 2 %}
+  {{ 'main-blog.css' | asset_url | preload_tag: as: 'style' }}
+{% endif %}
+{{ 'main-blog.css' | asset_url | stylesheet_tag }}
+<div class="section-container scheme-{{ section.settings.color_scheme }}">
+  {% render 'page-banner', section: section, title: blog.title, show_title : section.settings.show_heading %}
+  {% assign limit = section.settings.artical_per_page %}
+  {%- paginate blog.articles by limit -%}
+    <div class="main-blog-wrapper">
+      <div class="container">
+        {% if blog.articles_count > 0 %}
+          <div class="main-blog-items">
+            {%- for article in blog.articles -%}
+              {% assign placeholder_image_index = forloop.index0 | modulo: 3 | plus: 1 %}
+              {% assign placeholder_image = 'blog-apparel-' | append: placeholder_image_index %}
+              {% render 'card-blog',
+                article: article,
+                section: section,
+                date: section.settings.show_date,
+                author: section.settings.show_author,
+                placeholder_image: placeholder_image,
+                articleSearch: true
+              %}
+            {% endfor %}
+          </div>
+          {% liquid
+            if paginate.pages > 1
+              render 'pagination', paginate: paginate
+            endif
+          %}
+        {% endif %}
+      </div>
+    </div>
+  {% endpaginate %}
+</div>
+<style>
+  #shopify-section-{{ section.id }}{
+    --top-spacer: {{ section.settings.top_space_desktop }}px;
+    --bottom-spacer: {{ section.settings.bottom_space_desktop }}px;
+    --banner-height:{{ section.settings.banner_height_desktop }};
+    --banner-overlay-opacity:{{ section.settings.overlay_opacity | divided_by: 100.0 }};
+  }
+  @media only screen and (max-width:767px) {
+    #shopify-section-{{ section.id }}{
+      --top-spacer: {{ section.settings.top_space_mobile }}px;
+      --bottom-spacer: {{ section.settings.bottom_space_mobile }}px;
+      --banner-height:{{ section.settings.banner_height_mobile }};
+    }
+  }
+</style>
+{% schema %}
+{
+  "name": "t:sections.main-blog.name",
+  "tag": "section",
+  "class": "main-blog",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:global.header.space_section.label"
+    },
+    {
+      "type": "range",
+      "id": "top_space_desktop",
+      "label": "t:global.top_space_desktop.label",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "bottom_space_desktop",
+      "label": "t:global.bottom_space_desktop.label",
+      "default": 70,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "top_space_mobile",
+      "label": "t:global.top_space_mobile.label",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "bottom_space_mobile",
+      "label": "t:global.bottom_space_mobile.label",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "type": "header",
+      "content": "t:global.header.banner.label"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image",
+      "label": "t:sections.main-blog.settings.banner_image.label",
+      "info": "t:sections.main-blog.settings.banner_image.info"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "t:global.common.banner.overlay_opacity.label",
+      "default": 8,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%"
+    },
+    {
+      "type": "select",
+      "id": "banner_height_desktop",
+      "label": "t:sections.main-blog.settings.banner_height_desktop.label",
+      "default": "250px",
+      "options": [
+        {
+          "value": "250px",
+          "label": "t:global.common.height.options.small"
+        },
+        {
+          "value": "350px",
+          "label": "t:global.common.height.options.medium"
+        },
+        {
+          "value": "500px",
+          "label": "t:global.common.height.options.large"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "banner_height_mobile",
+      "label": "t:sections.main-blog.settings.banner_height_mobile.label",
+      "default": "100px",
+      "options": [
+        {
+          "value": "100px",
+          "label": "t:global.common.height.options.small"
+        },
+        {
+          "value": "200px",
+          "label": "t:global.common.height.options.medium"
+        },
+        {
+          "value": "350px",
+          "label": "t:global.common.height.options.large"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_heading",
+      "label": "t:sections.main-page.settings.show_heading.label",
+      "default":true
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:sections.main-page.settings.heading.label",
+      "info": "t:sections.main-page.settings.heading.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "heading_overly",
+      "label": "t:sections.main-blog.settings.heading_overlay.label",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "t:global.common.general_labels.heading_size",
+      "default": "h2",
+      "options": [
+        {
+          "value": "h1",
+          "label": "H1"
+        },
+        {
+          "value": "h2",
+          "label": "H2"
+        },
+        {
+          "value": "h3",
+          "label": "H3"
+        },
+        {
+          "value": "h4",
+          "label": "H4"
+        },
+        {
+          "value": "h5",
+          "label": "H5"
+        },
+        {
+          "value": "h6",
+          "label": "H6"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "t:global.common.heading_alignment.label",
+      "default": "text-center",
+      "options": [
+        {
+          "label": "t:global.common.heading_alignment.options.left.label",
+          "value": "text-left"
+        },
+        {
+          "label": "t:global.common.heading_alignment.options.center.label",
+          "value": "text-center"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main-blog.settings.blog_post.label"
+    },
+    {
+      "type": "range",
+      "id": "artical_per_page",
+      "min": 3,
+      "max": 24,
+      "step": 3,
+      "default": 12,
+      "label": "t:sections.main-blog.settings.artical_per_page.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "default": true,
+      "label": "t:sections.main-blog.settings.show_date.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "t:sections.main-blog.settings.show_author.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tags",
+      "default": true,
+      "label": "t:sections.main-blog.settings.show_tags.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "default": true,
+      "label": "t:sections.main-blog.settings.show_excerpt.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "comments_enabled",
+      "default": true,
+      "label": "t:sections.main-blog.settings.comments_enabled.label"
+    },
+   
+    {
+			"type": "header",
+			"content": "t:global.header.color_section.label"
+		},
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "secondary",
+      "label": "t:global.header.color_scheme.label"
+    }
+  ]
+}
+{% endschema %}

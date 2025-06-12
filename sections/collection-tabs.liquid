@@ -1,0 +1,398 @@
+{% if section.index <= 2 %}
+  {{ 'collection-tabs.css' | asset_url | preload_tag: as: 'style' }}
+{% endif %}
+{{ 'collection-tabs.css' | asset_url | stylesheet_tag }}
+
+<div class="collection-tabs-main-wraper section-container scheme-{{ section.settings.color_scheme }}{% if section.settings.use_gradient_background %} gradient-background{% endif %}">
+  <div class="collection-tabs-wrapper">
+    {% if section.settings.background_image %}
+      <div class="collection-tabs-image-list background-blur-{{ section.settings.background_blur }}">
+        {% assign firstImageRatio = 1
+          | divided_by: section.settings.background_image.aspect_ratio
+          | times: 100
+          | minus: 1
+        %}
+        <div class="media-box" style="--image-ratio:{{ firstImageRatio }}%">
+          {% render 'image', image: section.settings.background_image, class: '' %}
+        </div>
+      </div>
+    {% endif %}
+    <div class="container-sm collection-tabs-content-box tab-setion-{{ section.id }}">
+      {% if section.blocks.size > 0 -%}
+        <div class="collection-tabs-content-list">
+          {%- for block in section.blocks -%}
+            {% if block.settings.collection != blank %}
+              {% assign collection = block.settings.collection %}
+              <div class="collection-tabs-content {% if forloop.first == true %}active{% endif %}"
+                id="collection-tabs-content-{{ block.id }}"
+                data-tab-filters="products-{{ block.id }}"
+                data-section-id="{{ section.id }}"
+                {{ block.shopify_attributes }}
+              >
+                <a href="#tabCollection-{{ section.id }}-{{ block.id }}"
+                  class="collection-tabs-heading heading-font h2"
+                  aria-disabled="true"
+                  data-collection-list-{{ block.id }}
+                  aria-label="{% if block.settings.heading != blank %} {{ block.settings.heading }} {% else %}{{ block.settings.collection }}{% endif %}"
+                >
+                  <span class="collection-tabs-heading-text cursor-pointer">
+                    {%- if block.settings.heading != blank %}
+                      {{ block.settings.heading }}
+                    {% else %}
+                      {{ collection.title }}
+                    {% endif -%}
+                  </span>
+                  {% if section.blocks.size > 1 -%}
+                    <span class="collection-tabs-icon">
+                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0L10 2.2584e-08V10.0001H8.15859V3.14345L1.32837 9.97369L0.0263058 8.67164L6.85653 1.84139L0 1.84139L0 0Z" fill="currentColor"/>
+                      </svg>
+                    </span>
+                  {% endif %}
+                </a>
+              </div>
+            {% else %}
+              <div
+                class="collection-tabs-content {% if forloop.first == true %}active{% endif %}"
+                id="collection-tabs-content-{{ block.id }}"
+                data-tab-filters="products-{{ block.id }}"
+                 data-section-id="{{ section.id }}"
+                {{ block.shopify_attributes }}
+              >
+                <a href="#tabCollection-{{ section.id }}-{{ block.id }}"
+                  class="collection-tabs-heading heading-font h2"
+                  aria-disabled="true"
+                  data-collection-list
+                  aria-label="{{ 'onboarding.collection_title' | t }}"
+                >
+                  <span class="collection-tabs-heading-text cursor-pointer"> {{ 'onboarding.collection_title' | t }}</span>
+                  {% if section.blocks.size > 1 -%}
+                    <span class="collection-tabs-icon">
+                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0L10 2.2584e-08V10.0001H8.15859V3.14345L1.32837 9.97369L0.0263058 8.67164L6.85653 1.84139L0 1.84139L0 0Z" fill="currentColor"/>
+                      </svg>
+                    </span>
+                  {% endif %}
+                </a>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+      {%- if section.blocks.size > 0 -%}
+        <div class="collection-tabs-products">
+          {%- for block in section.blocks -%}
+            <div
+              id="tabCollection-{{ section.id }}-{{ block.id }}"
+              class="collection-tabs-product-item {% if forloop.first == true %}active{% endif %}"
+              data-id="products-{{ block.id }}" {{ block.shopify_attributes }}
+            >
+              <div
+                id="products-{{ block.id }}"
+                class="collection-tabs-products-content slider product-card-slider product-{{ block.id }}"
+                
+                data-sl-slider
+                data-slick='
+                  {"infinite": true,
+                      "slidesToShow":5,
+                      "slidesToScroll": 1,
+                      "autoplay":false,
+                      "arrows": true,
+                      "responsive": [
+                      {
+                        "breakpoint": 1200,
+                        "settings": {
+                          "slidesToShow": 4
+                        }
+                      },
+                      {
+                        "breakpoint": 991,
+                        "settings": {
+                          "slidesToShow": 3
+                        }
+                      },
+                      {
+                        "breakpoint": 767,
+                        "settings": {
+                            "slidesToShow": 2
+
+                        }
+                      }
+                    ]
+                  }'
+           
+                {{ block.shopify_attributes }}
+              >
+                {% if block.settings.collection != blank %}
+                  {% assign selectedtabcollection = block.settings.collection %}
+                  {% if selectedtabcollection != blank and selectedtabcollection.all_products_count > 0 %}
+                    {% for product in selectedtabcollection.products limit: section.settings.product_range %}
+                      {% assign productFormId = 'product-form-'
+                        | append: section.id
+                        | append: forloop.index
+                        | append: '-'
+                        | append: selectedtabcollection.handle
+                      %}
+                      <div class="product-card-item">
+                        {%- capture current -%}{% cycle section.id: 1, 2, 3, 4 %}{%- endcapture -%}
+                        {%- assign placeholder_image = 'product-apparel-' | append: current -%}
+                        {% render 'card-product',
+                          placeholder_image: placeholder_image,
+                          cProduct: product,
+                          section: section,
+                          block: block,
+                          productFormId: productFormId,
+                          showswatches: false,
+                          showbadges: false,
+                          gridImageSize: section.settings.grid_image_size
+                        %}
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+
+                {% else %}
+                  {% liquid
+                    assign gridImageSize = section.settings.grid_image_size
+                    if gridImageSize == 'landscape'
+                      assign productImageRatio = 75
+                    elsif gridImageSize == 'square'
+                      assign productImageRatio = 100
+                    elsif gridImageSize == 'portrait'
+                      assign productImageRatio = 125
+                    else
+                      assign productImageRatio = 100
+                    endif
+                  %}
+                  {%- for i in (1..section.settings.product_range) -%}
+                    <div class="product-card-item">
+                      <div class="product-card {% if settings.image_border %} border-enabled {% endif %}{% if settings.image_background %} background-enabled {% endif %}">
+                        <div class="product-card-img">
+                          <div class="media-box no-product-image" style="--image-ratio:{{ productImageRatio }}%">
+                            {%- capture current -%}{% cycle 1, 2, 3, 4 %}{%- endcapture -%}
+                            {{ 'product-apparel-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+                          </div>
+                        </div>
+                        <div class="product-card-detail">
+                          <div class="product-card-detail-info">
+                            <span class="product-title heading-font">{{ 'products.product.onboarding.title' | t }}</span>
+                            <div class="product-pricing">
+                              <span class="product-actual-price">{{ 1999 | money }}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+<style>
+    #shopify-section-{{ section.id }}.shopify-section {
+      --content-overlay-opacity:{{ section.settings.content_overlay_opacity | divided_by: 100.0 }};
+      --top-spacer:{{ section.settings.top_space_desktop }}px;
+      --bottom-spacer:{{ section.settings.bottom_space_desktop }}px;
+    }
+    @media only screen and (max-width:767px) {
+      #shopify-section-{{ section.id }}.shopify-section{
+        --top-spacer:{{ section.settings.top_space_mobile }}px;
+        --bottom-spacer:{{ section.settings.bottom_space_mobile }}px;
+      }
+    }
+    {% if section.settings.section_visibility == 'large' %}
+      @media (max-width: 767px) {
+        #shopify-section-{{ section.id }}{
+          display: none !important;
+        }
+      }
+    {% elsif section.settings.section_visibility == 'small' %}
+      @media (min-width: 768px) {
+        #shopify-section-{{ section.id }}{
+          display: none !important;
+        }
+      }
+    {% endif %}
+</style>
+
+{% schema %}
+{
+  "name": "t:sections.collection-tabs.name",
+  "tag": "section",
+  "class": "collection-tabs",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.Overlay"]
+  },
+  "max_blocks": 3,
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:global.header.space_section.label"
+    },
+    {
+      "type": "range",
+      "id": "top_space_desktop",
+      "label": "t:global.top_space_desktop.label",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "bottom_space_desktop",
+      "label": "t:global.bottom_space_desktop.label",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "top_space_mobile",
+      "label": "t:global.top_space_mobile.label",
+      "default": 30,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "bottom_space_mobile",
+      "label": "t:global.bottom_space_mobile.label",
+      "default": 30,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "type": "select",
+      "id": "section_visibility",
+      "label": "t:global.common.section_visibility.label",
+      "default": "always",
+      "options": [
+        {
+          "label": "t:global.common.section_visibility.options.always",
+          "value": "always"
+        },
+        {
+          "label": "t:global.common.section_visibility.options.small",
+          "value": "small"
+        },
+        {
+          "label": "t:global.common.section_visibility.options.large",
+          "value": "large"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "grid_image_size",
+      "label": "t:global.common.image_ratio.label",
+      "default": "auto",
+      "options": [
+        {
+          "value": "auto",
+          "label": "t:global.common.image_ratio.options.auto"
+        },
+        {
+          "value": "landscape",
+          "label": "t:global.common.image_ratio.options.landscape"
+        },
+        {
+          "value": "portrait",
+          "label": "t:global.common.image_ratio.options.portrait"
+        },
+        {
+          "value": "square",
+          "label": "t:global.common.image_ratio.options.square"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "product_range",
+      "label": "t:sections.collection-tabs.settings.product_range.label",
+      "min": 1,
+      "max": 16,
+      "step": 1,
+      "default": 6
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "t:sections.collection-tabs.blocks.settings.background_image.label"
+    },
+    {
+      "type": "range",
+      "id": "content_overlay_opacity",
+      "label": "t:global.common.general_labels.opacity",
+      "default": 0,
+      "max": 100,
+      "min": 0,
+      "step": 1,
+      "unit": "%"
+    },
+    {
+      "type": "checkbox",
+      "id": "background_blur",
+      "label": "t:sections.collection-tabs.settings.background_blur.label",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "use_gradient_background",
+      "label": "Show gradient background",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:global.header.color_section.label"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "primary",
+      "label": "t:global.header.color_scheme.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "t:sections.collection-tabs.blocks.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:sections.collection-tabs.blocks.settings.heading.label"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "t:sections.collection-tabs.blocks.settings.collection.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.collection-tabs.presets.name",
+      "blocks": [
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

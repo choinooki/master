@@ -1,0 +1,69 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "Overlay",
+  "type": "custom.Overlay",
+  "sections": {
+    "quick-view-drawer": {
+      "type": "quick-view",
+      "blocks": {
+        "title_G83WBR": {
+          "type": "title",
+          "settings": {}
+        },
+        "sku_XYD7zL": {
+          "type": "sku",
+          "settings": {}
+        },
+        "text_GmiteE": {
+          "type": "text",
+          "settings": {
+            "text": "We're excited to bring you a selection of special discounts tailored just for you! As summer heats up, it’s the perfect time to refresh."
+          }
+        },
+        "price_44TdFT": {
+          "type": "price",
+          "settings": {
+            "hide_shipping_content": true
+          }
+        },
+        "variant_pkAzAN": {
+          "type": "variant",
+          "settings": {
+            "option_style": "swatch"
+          }
+        },
+        "quantity_selector_d3J7eW": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "button_Pgpwhw": {
+          "type": "button",
+          "settings": {
+            "dynamic_checkout_btn": true
+          }
+        }
+      },
+      "block_order": [
+        "title_G83WBR",
+        "sku_XYD7zL",
+        "text_GmiteE",
+        "price_44TdFT",
+        "variant_pkAzAN",
+        "quantity_selector_d3J7eW",
+        "button_Pgpwhw"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "quick-view-drawer"
+  ]
+}

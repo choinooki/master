@@ -1,0 +1,246 @@
+<style>
+  #shopify-section-{{ section.id }}{
+    --mainBannerHeight:{{ section.settings.banner_height_desktop }};
+  }
+  @media screen and (max-width:767px){
+    #shopify-section-{{ section.id }}{
+      --mainBannerHeight:{{ section.settings.banner_height_mobile }};
+    }
+  }
+</style>
+<div class="section-container scheme-{{ section.settings.color_scheme }}">
+  {% render 'page-banner', section: section, title: page.title,show_title : section.settings.show_heading %}
+  {%- if page.content != blank -%}
+    <div class="page-content-box">    
+    <div class="container">
+      <div class="page-content rte">
+        {{
+          page.content
+          | replace: '<table', '<div class="table-main"><table'
+          | replace: '</table>', '</table></div>'
+        }}
+      </div>
+    </div>
+  </div>
+  {%- endif -%}
+</div>
+<style>
+  #shopify-section-{{ section.id }}{
+    --top-spacer: {{ section.settings.top_space_desktop }}px;
+    --bottom-spacer: {{ section.settings.bottom_space_desktop }}px;
+    --banner-height:{{ section.settings.banner_height_desktop }};
+    --banner-overlay-opacity:{{ section.settings.overlay_opacity | divided_by: 100.0 }};
+  }
+  @media only screen and (max-width:767px) {
+    #shopify-section-{{ section.id }}{
+      --top-spacer: {{ section.settings.top_space_mobile }}px;
+      --bottom-spacer: {{ section.settings.bottom_space_mobile }}px;
+      --banner-height:{{ section.settings.banner_height_mobile }};
+    }
+  }
+</style>
+{% schema %}
+{
+  "name": "t:sections.main-page.name",
+  "tag": "section",
+  "class": "main-page",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:global.header.space_section.label"
+    },
+    {
+      "type": "range",
+      "id": "top_space_desktop",
+      "label": "t:global.top_space_desktop.label",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "bottom_space_desktop",
+      "label": "t:global.bottom_space_desktop.label",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "top_space_mobile",
+      "label": "t:global.top_space_mobile.label",
+      "default": 35,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "bottom_space_mobile",
+      "label": "t:global.bottom_space_mobile.label",
+      "default": 35,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "type": "header",
+      "content": "t:global.header.banner.label"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image",
+      "label": "t:sections.main-page.settings.banner_image.label",
+      "info": "t:sections.main-page.settings.banner_image.info"
+    },
+    {
+      "type": "select",
+      "id": "banner_height_desktop",
+      "label": "t:sections.main-page.settings.banner_height_desktop.label",
+      "default": "200px",
+      "options": [
+        {
+          "value": "200px",
+          "label": "t:global.common.height.options.small"
+        },
+        {
+          "value": "350px",
+          "label": "t:global.common.height.options.medium"
+        },
+        {
+          "value": "500px",
+          "label": "t:global.common.height.options.large"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "banner_height_mobile",
+      "label": "t:sections.main-page.settings.banner_height_mobile.label",
+      "default": "200px",
+      "options": [
+        {
+          "value": "100px",
+          "label": "t:global.common.height.options.small"
+        },
+        {
+          "value": "200px",
+          "label": "t:global.common.height.options.medium"
+        },
+        {
+          "value": "350px",
+          "label": "t:global.common.height.options.large"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_heading",
+      "label": "t:sections.main-page.settings.show_heading.label",
+      "default":true
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:sections.main-page.settings.heading.label",
+      "info": "t:sections.main-page.settings.heading.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "heading_overly",
+      "label": "t:sections.main-page.settings.heading_overly.label",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "t:global.common.general_labels.heading_size",
+      "default": "h2",
+      "options": [
+        {
+          "value": "h1",
+          "label": "H1"
+        },
+        {
+          "value": "h2",
+          "label": "H2"
+        },
+        {
+          "value": "h3",
+          "label": "H3"
+        },
+        {
+          "value": "h4",
+          "label": "H4"
+        },
+        {
+          "value": "h5",
+          "label": "H5"
+        },
+        {
+          "value": "h6",
+          "label": "H6"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "content_width",
+      "label": "t:global.common.content_width.label",
+      "default": "medium",
+      "options": [
+        {
+          "value": "small",
+          "label": "t:global.common.content_width.options.small"
+        },
+        {
+          "value": "medium",
+          "label": "t:global.common.content_width.options.medium"
+        },
+        {
+          "value": "large",
+          "label": "t:global.common.content_width.options.large"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "t:global.header.content_alignment_section.label",
+      "default": "text-center",
+      "options": [
+        {
+          "label": "t:global.common.alignments.left",
+          "value": "text-left"
+        },
+        {
+          "label": "t:global.common.alignments.center",
+          "value": "text-center"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "t:global.common.banner.overlay_opacity.label",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%"
+    },
+    {
+			"type": "header",
+			"content": "t:global.header.color_section.label"
+		},
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "secondary",
+      "label": "t:global.header.color_scheme.label"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,366 @@
+{% if section.index <= 2 %}
+  {{ 'collection-list.css' | asset_url | preload_tag: as: 'style' }}
+{% endif %}
+{{ 'collection-list.css' | asset_url | stylesheet_tag }}
+<div class="section-container scheme-{{ section.settings.color_scheme }}">
+  {% assign limit = section.settings.collections_per_page %}
+  {% render 'page-banner', section: section, show_title : true %}
+  {% paginate collections by limit %}
+
+  {%- liquid
+    case section.settings.sort
+      when 'products_high', 'products_low'
+        assign collections = collections | sort: 'all_products_count'
+      when 'date', 'date_reversed'
+        assign collections = collections | sort: 'published_at'
+    endcase
+    if section.settings.sort == 'products_high' or section.settings.sort == 'date_reversed' or section.settings.sort == 'alphabetical_reversed'
+      assign collections = collections | reverse
+    endif
+  -%}
+
+    <div class="collection-list-wrapper">
+      <div class="container">
+        <div class="row">
+          {% liquid
+            if collections.size > 0
+              for collection in collections
+                assign placeholder_image_index = forloop.index0 | modulo: 4 | plus: 1
+                assign placeholder_image = 'collection-apparel-' | append: placeholder_image_index
+                render 'card-collection', collection: collection, section: section, gridImageSize: section.settings.grid_image_size, placeholder_image: placeholder_image
+              endfor
+            endif
+          %}
+        </div>
+        {% liquid
+          if paginate.pages > 1
+            render 'pagination', paginate: paginate
+          endif
+        %}
+      </div>
+    </div>
+  {% endpaginate %}
+</div>
+<style>
+  #shopify-section-{{ section.id }}.shopify-section {
+    --top-spacer:{{ section.settings.top_space_desktop }}px;
+    --bottom-spacer:{{ section.settings.bottom_space_desktop }}px;
+    --banner-height:{{ section.settings.banner_height_desktop }};
+    --banner-overlay-opacity:{{ section.settings.overlay_opacity | divided_by: 100.0 }};
+    --overlay-opacity:{{ section.settings.heading_overlay_opacity | divided_by: 100.0 }};
+
+  }
+  @media only screen and (max-width:767px) {
+    #shopify-section-{{ section.id }}.shopify-section{
+      --top-spacer:{{ section.settings.top_space_mobile }}px;
+      --bottom-spacer:{{ section.settings.bottom_space_mobile }}px;
+      --banner-height:{{ section.settings.banner_height_mobile }};
+    }
+  }
+</style>
+{% schema %}
+{
+  "name": "t:sections.main-collection-list.name",
+  "tag": "section",
+  "class": "main-collection-list",
+
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:global.header.space_section.label"
+    },
+    {
+      "type": "range",
+      "id": "top_space_desktop",
+      "label": "t:global.top_space_desktop.label",
+      "default": 60,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "bottom_space_desktop",
+      "label": "t:global.bottom_space_desktop.label",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "top_space_mobile",
+      "label": "t:global.top_space_mobile.label",
+      "default": 35,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "bottom_space_mobile",
+      "label": "t:global.bottom_space_mobile.label",
+      "default": 35,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "type": "header",
+      "content": "t:global.header.banner.label"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image",
+      "label": "t:sections.main-collection-list.settings.banner_image.label",
+      "info": "t:sections.main-collection-list.settings.banner_image.info"
+    },
+    {
+      "type": "select",
+      "id": "banner_height_desktop",
+      "label": "t:sections.main-collection-list.settings.banner_height_desktop.label",
+      "default": "350px",
+      "options": [
+        {
+          "value": "250px",
+          "label": "t:global.common.height.options.small"
+        },
+        {
+          "value": "350px",
+          "label": "t:global.common.height.options.medium"
+        },
+        {
+          "value": "500px",
+          "label": "t:global.common.height.options.large"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "banner_height_mobile",
+      "label": "t:sections.main-collection-list.settings.banner_height_mobile.label",
+      "default": "200px",
+      "options": [
+        {
+          "value": "100px",
+          "label": "t:global.common.height.options.small"
+        },
+        {
+          "value": "200px",
+          "label": "t:global.common.height.options.medium"
+        },
+        {
+          "value": "350px",
+          "label": "t:global.common.height.options.large"
+        }
+      ]
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:sections.main-page.settings.heading.label",
+      "default":"Collections"
+    },
+    {
+      "type": "checkbox",
+      "id": "heading_overly",
+      "label": "t:sections.main-collection-list.settings.heading_overlay.label",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "t:global.common.banner.overlay_opacity.label",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "t:global.common.general_labels.heading_size",
+      "default": "h2",
+      "options": [
+        {
+          "value": "h1",
+          "label": "H1"
+        },
+        {
+          "value": "h2",
+          "label": "H2"
+        },
+        {
+          "value": "h3",
+          "label": "H3"
+        },
+        {
+          "value": "h4",
+          "label": "H4"
+        },
+        {
+          "value": "h5",
+          "label": "H5"
+        },
+        {
+          "value": "h6",
+          "label": "H6"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "content_width",
+      "label": "t:global.common.content_width.label",
+      "default": "medium",
+      "options": [
+        {
+          "value": "small",
+          "label": "t:global.common.content_width.options.small"
+        },
+        {
+          "value": "medium",
+          "label": "t:global.common.content_width.options.medium"
+        },
+        {
+          "value": "large",
+          "label": "t:global.common.content_width.options.large"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "t:global.header.content_alignment_section.label",
+      "default": "text-left",
+      "options": [
+        {
+          "label": "t:global.common.heading_alignment.options.left.label",
+          "value": "text-left"
+        },
+        {
+          "label": "t:global.common.heading_alignment.options.center.label",
+          "value": "text-center"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main-collection-list.settings.grid.label"
+    },
+    {
+      "type": "range",
+      "id": "collections_per_page",
+      "min": 4,
+      "max": 24,
+      "step": 4,
+      "default": 12,
+      "label": "t:sections.main-collection-list.settings.collections_per_page.label"
+    },
+    {
+      "type": "select",
+      "id": "grid_image_size",
+      "label": "t:global.common.image_ratio.label",
+      "default": "auto",
+      "options": [
+        {
+          "value": "auto",
+          "label": "t:global.common.image_ratio.options.auto"
+        },
+        {
+          "value": "landscape",
+          "label": "t:global.common.image_ratio.options.landscape"
+        },
+        {
+          "value": "portrait",
+          "label": "t:global.common.image_ratio.options.portrait"
+        },
+        {
+          "value": "square",
+          "label": "t:global.common.image_ratio.options.square"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sort",
+      "label": "t:sections.main-collection-list.settings.sort.label",
+      "options": [
+        {
+          "value": "alphabetical",
+          "label": "t:sections.main-collection-list.settings.sort.options.alphabetical.label"
+        },
+        {
+          "value": "alphabetical_reversed",
+          "label": "t:sections.main-collection-list.settings.sort.options.alphabetical_reversed.label"
+        },
+        {
+          "value": "date_reversed",
+          "label": "t:sections.main-collection-list.settings.sort.options.date_reversed.label"
+        },
+        {
+          "value": "date",
+          "label": "t:sections.main-collection-list.settings.sort.options.date.label"
+        },
+        {
+          "value": "products_high",
+          "label": "t:sections.main-collection-list.settings.sort.options.products_high.label"
+        },
+        {
+          "value": "products_low",
+          "label": "t:sections.main-collection-list.settings.sort.options.products_low.label"
+        }
+      ],
+      "default": "alphabetical"
+     
+    },
+    {
+      "type": "checkbox",
+      "id": "heading_overlay",
+      "default": false,
+      "label": "t:sections.main-collection-list.settings.title_overlay.label"
+    },
+    {
+      "type": "select",
+      "id": "title_postion",
+      "label": "t:sections.main-collection-list.settings.title_postion.label",
+      "default": "center",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:global.common.alignments.left"
+        },
+        {
+          "value": "center",
+          "label": "t:global.common.alignments.center"
+        },
+        {
+          "value": "right",
+          "label": "t:global.common.alignments.right"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "heading_overlay_opacity",
+      "label": "t:sections.main-collection-list.settings.heading_overlay_opacity.label",
+      "default": 0,
+      "max": 100,
+      "min": 0,
+      "step": 1,
+      "unit": "%"
+    },
+    {
+			"type": "header",
+			"content": "t:global.header.color_section.label"
+		},
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "primary",
+      "label": "t:global.header.color_scheme.label"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,5 @@
+{% for variant in product.variants %}
+   {% if forloop.index > 3 %}
+    {% render 'collection-table-variant', variant: variant , product: product, section: section, index: forloop.index, newclass: 'extra-varinats-wrapper'  %}
+   {% endif %}
+{% endfor %}
