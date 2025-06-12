@@ -1,0 +1,57 @@
+{%- liquid
+    assign variantOption = 'option' | append: option.position
+    assign colorOptions = settings.color_name | downcase
+    assign downOption = option.name | downcase
+  -%}
+<ul class="product-variants-list product-loop-variants">
+    {%- for value in option.values -%}
+      {% assign variantValue = product.variants
+        | where: variantOption, value
+        | compact: 'featured_media'
+        | first
+      %}
+      <li class="variant-item {% if value.selected %}active{% endif %}">
+        <label class="hidden" for="option-{{ optionIndex }}-{{ forloop.index }}-{{ section.id }}">{{- value -}}</label>
+        <input
+          class="productOption{% unless value.available %} not-available{% endunless %}" 
+          id="option-{{ optionIndex }}-{{ forloop.index }}-{{ section.id }}"
+          form="{{ product_form_id }}"
+          type="radio"
+          name="option-{{ optionIndex }}"
+          value="{{ value | escape }}"
+          title="{{ value }}"
+          {% if value.product_url != blank %}
+           data-product-url="{{ value.product_url }}"
+          {% endif  %}
+            data-value-product-id="{{ value.id }}"
+          {% if value.selected %}
+            checked
+          {% endif %}
+        > 
+
+        <span
+          class="variant-item-name{% if value.swatch.image != blank %} variant-img{% else %}{% if variantValue and settings.show_variant_image %} variant-img{% endif %}{% endif %}"
+          {% if colorOptions contains downOption %}
+            data-tooltip="{{ value }}"
+                {% if variantValue and settings.show_variant_image %}
+                  style="--swatch-img:url({{ variantValue.featured_media.preview_image | image_url: width: '77' }});"
+                 {% else %}
+                    {% if value.swatch.image %}
+                        style="--swatch-img:url({{ value.swatch.image | image_url: width: '77' }});  background-position:{{ value.swatch.image.presentation.focal_point }};"
+                    {% elsif value.swatch.color %}
+                        data-color="{{ value }}"
+                        style="--swatch-color:rgb({{ value.swatch.color.rgb }});"
+                    {% else %}
+                        data-color="{{ value }}"
+                        style="--swatch-color:{{ value }};"
+                    {% endif %}
+              {% endif %}
+          {% endif %}
+          >
+          {%- unless colorOptions contains downOption -%}
+            {{- value -}}
+          {%- endunless -%}
+        </span>
+      </li>
+    {%- endfor -%}
+  </ul>

@@ -1,0 +1,30 @@
+<div class="complimentory-product" data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ block.settings.products_count }}&intent=complementary"
+    product-recommendations
+    {{ block.shopify_attributes }}>
+    {%- if recommendations.performed and recommendations.products_count > 0 -%}
+      <h5 class="complimentory-heading text-large">{{ block.settings.heading }}</h5>
+      <div class="complimentory-product-wrapper product-card-outer small-product">
+      <div
+        id="complementary_products-{{ section.id }}"
+        class="complimentory-products  slider"
+        tabindex="0"
+        data-slick='{"infinite": true,"slidesToShow":2, "slidesToScroll": 1, "autoplay":false, "arrows": true,"responsive": [
+            {
+              "breakpoint": 575,
+              "settings": {
+                  "slidesToShow": 1
+            
+              }
+            }
+          ]}'
+      >
+        {%- for product in recommendations.products limit: block.settings.products_count -%}
+          <div class="product-card-item">
+            {% render 'horizontal-product-card', product: product %}
+          </div>
+        {% endfor %}
+      </div>
+      </div>
+    {%- endif -%}
+  </div>
+  

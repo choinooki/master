@@ -1,0 +1,41 @@
+{%- if settings.enable_shipping and settings.shipping_rate != blank and cart.item_count > 0 -%}
+    {% liquid
+      assign status = false
+      assign shippingRate = settings.shipping_rate | times: 100
+      assign cartTotal = cart.total_price
+      assign shippingPrice = shippingRate | minus: cartTotal
+      if shippingPrice > 0
+        assign sprice = shippingPrice
+        assign shippingPrice = shippingPrice | money
+        assign shippingMessage = settings.shipping_message | replace: '||amount||', shippingPrice
+      else
+        assign shippingMessage = settings.shipping_success | replace :'[','<span class="highlighted-success">' | replace :']','</span>'
+        assign status = true
+      endif
+
+      assign shippingPercentage = cartTotal | times: 100 | divided_by: shippingRate
+      if shippingPercentage > 10 and shippingPercentage < 100
+        assign shippingPercentage = shippingPercentage
+      elsif shippingPercentage > 100
+        assign shippingPercentage = 100
+      endif
+    %}
+    <div class="cart-shipping-bar" data-free-shipping-wrapper
+      data-cart-total="{{ cartTotal }}"
+      data-cart-shipping="{{ sprice }}"
+      data-cart-rate="{{ shippingRate }}"
+    >
+      <p data-shipping-message>{{ shippingMessage }}</p>
+      <div class="cart-shipping-bar-progress{% if status %} hidden{% endif  %}" data-shipping-progress-bar>
+        <div
+          class="cart-shipping-bar-progress-width"
+          role="progressbar"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          data-width="{{ shippingPercentage }}%"
+          data-shipping-bar
+          aria-label="shipping-progressbar"
+        ></div>
+      </div>
+    </div>
+  {% endif %}

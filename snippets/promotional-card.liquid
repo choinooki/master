@@ -1,0 +1,82 @@
+{% liquid
+  if gridImageSize == 'landscape'
+    assign promotionalImageRatio = 75
+  elsif gridImageSize == 'square'
+    assign promotionalImageRatio = 100
+  elsif gridImageSize == 'portrait'
+    assign promotionalImageRatio = 125
+  else
+    if section.settings.image != blank
+      assign promotionalImageRatio = 1 | divided_by: section.settings.image.aspect_ratio | times: 100
+    else
+      assign promotionalImageRatio = 100
+    endif
+  endif
+%}
+<div class="promotional-card-item{% if section.settings.promotion_border %} border-enabled{% endif %}{% if section.settings.background_style != 'none' %} background-enabled{% endif %}{% if section.settings.background_style == 'animated' %} background-animated{% endif %} scheme-{{ section.settings.promotional_color_scheme }}">
+ 
+{% if section.settings.marquee_promotion_text != blank %}
+  {% comment %}
+  <div class="image-text-marque top-marque">
+    {% for i in (0..20) %}
+      <div class="image-text-marque-node heading-font">{{ section.settings.marquee_promotion_text }}</div>
+    {% endfor %}
+  </div>
+  <div class="image-text-marque bottom-marque">
+    {% for i in (0..20) %}
+      <div class="image-text-marque-node heading-font">{{ section.settings.marquee_promotion_text }}</div>
+    {% endfor %}
+  </div>
+  {% endcomment %}
+  <div class="image-text-marque right-marque">
+    {% for i in (0..20) %}
+      <div class="image-text-marque-node heading-font">{{ section.settings.marquee_promotion_text }}</div>
+    {% endfor %}
+  </div>
+  <div class="image-text-marque left-marque">
+    {% for i in (0..20) %}
+      <div class="image-text-marque-node heading-font">{{ section.settings.marquee_promotion_text }}</div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+  <div class="promotional-card">
+    <div class="promotional-card-img">
+      <div class="media-box" style="--image-ratio:{{ promotionalImageRatio }}%">
+        {% if section.settings.image != blank %}
+          {%- render 'image', image: section.settings.image -%}
+        {% else %}
+          {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        {% endif %}
+      </div>
+    </div>
+
+    {% if section.settings.pr_heading != blank
+      or section.settings.pr_description != blank
+      or section.settings.btn_link != blank
+      and section.settings.btn_text != blank
+    %}
+      <div class="promotional-card-content">
+        {% if section.settings.pr_heading != blank %}
+          <h2 class="promotional-card-heading {{section.settings.pr_heading_size}}">
+            {{ section.settings.pr_heading }}
+          </h2>
+        {% endif %}
+        {% if section.settings.pr_description != blank %}
+          <div class="promotional-card-desc text-xsmall">{{ section.settings.pr_description }}</div>
+        {% endif %}
+
+        {% if section.settings.btn_link != blank and section.settings.btn_text != blank %}
+          <div class="promotional-card-button">
+            <a
+              href="{{ section.settings.btn_link }}"
+              class="button{% if section.settings.btn_as_outline %} outline-button{% endif %} small-btn"
+              aria-label="{{ section.settings.btn_text }}"
+              ><span>{{ section.settings.btn_text }}</span></a
+            >
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</div>

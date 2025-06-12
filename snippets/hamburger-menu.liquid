@@ -1,0 +1,61 @@
+<div id="menu" smoothscroll="fixed" class="menu-main-wrapper">
+    <div class="menu-container">
+        <div class="menu-container-inner">
+            <div class="container">
+                <button type="button" action="menu.close" aria-label="Close Menu" class="close-toggle"> 
+                    {% render 'theme-icons', theme_icon: 'drawer_close' %} 
+                </button>
+                <div class="menu-outer-main">
+                    <div class="menu-outer">
+                        <ul class="main-menu">
+                            {%- for link in linklists[section.settings.menu].links -%}
+                                <li class="nav-menu">
+                                    {% if link.links != blank %}
+                                        <details class="dropdown-detail">
+                                                <summary class="nav-menu-link dropdown-menu">
+                                                    <span>
+                                                        <sub>
+                                                            {{ link.title | escape }}
+                                                            <svg width="20" height="11" viewBox="0 0 20 11" fill="none" >
+                                                                <path d="M19 1L10 10L1 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                            </svg>
+                                                        </sub>
+                                                    </span>
+                                                </summary>
+                                                <div class="dropdown-menus-main">
+                                                {%- for childlink in link.links -%}
+                                                        <div id="link-{{ childlink.title | escape }}" class="dropdown-menus-inner">
+                                                            <a class="child-nav-menu-link" href="{{ childlink.url }}">
+                                                                <strong class="summenu-title"> {{ childlink.title | escape }}</strong>
+                                                            </a>
+                                                            {% if childlink.links != blank%}
+                                                            <ul class="dropdown-menus">
+                                                                {%- for grandchildlink in childlink.links -%}
+                                                                <li id="link-{{ link.grandchildlink | escape }}" class="nav-megamenu">
+                                                                    <a class="nav-menu-link" href="{{ grandchildlink.url }}">
+                                                                        <span><sub>{{ grandchildlink .title | escape }}</sub></span>
+                                                                    </a>
+                                                                </li>
+                                                                {% endfor %}
+                                                            </ul>
+                                                        {% endif %}
+                                                        </div>
+                                                {% endfor %}
+                                            </div>
+                                            </details>
+                                        {%- else -%}
+                                            <a href="{{ link.url }}" class="nav-menu-link">
+                                            <span><sub>
+                                                {{ link.title | escape }}
+                                            </sub></span>
+                                            </a>
+                                {%- endif -%}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

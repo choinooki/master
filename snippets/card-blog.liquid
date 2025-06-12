@@ -1,0 +1,109 @@
+{%- liquid
+  if article.image != blank
+  if image_sizes
+   assign gridImageSize = image_sizes 
+  else
+   assign gridImageSize = settings.blog_grid_image_size
+  endif
+  if gridImageSize == 'landscape'
+      assign imageRatio = 75
+    elsif gridImageSize == 'square'
+      assign imageRatio = 100
+    elsif gridImageSize == 'portrait'
+      assign imageRatio = 125
+    else
+      assign imageRatio = 1 | divided_by: article.image.src.aspect_ratio | times: 100
+    endif
+  else
+    assign imageRatio = 100
+  endif
+%}
+
+
+<div class="blog-post-item {{ class }}" {% if animation %} data-aos="fade-up" data-aos-duration="{{ aos_duration }}" data-aos-easing="linear"{% endif %}>
+
+  <{% if article != blank %}a  href="{{ article.url }}" aria-label="{{ article.title }}"{% else %}div{% endif %}
+    class="animate-hvr blog-post-img">
+    
+    {% if article.image != blank or placeholder_image != blank %}
+    <div class="media-box" style="--image-ratio:{{ imageRatio }}%">
+      {% if article.image != blank %}
+        {% render 'image', image: article.image.src %}
+      {% else %}
+        {% if placeholder_image != blank %}
+          {{ placeholder_image | placeholder_svg_tag: 'placeholder-svg' }}
+        {% endif %}
+      {% endif %}
+    </div>
+   {% endif %}
+  </{% if article != blank %}a{% else %}div{% endif %}>
+  <div class="blog-post-content">
+    {% if articleSearch == true
+      or section.settings.show_date
+      or section.settings.show_author
+      or article.comments_count > 0
+      and blog.comments_enabled?
+      and section.settings.comments_enabled
+    %}
+      <div class="blog-post-info">
+        {%- if articleSearch == true -%}
+        {%- if  article.comments_count > 0
+          and blog.comments_enabled?
+          and section.settings.comments_enabled
+        -%}
+          <span class="comment-count">
+            {{ 'blogs.article.comments' | t: count: article.comments_count }}
+          </span>
+        {%- endif -%}
+        {%- endif -%}
+        {% if article != blank %}
+          {% if articleSearch == true or section.settings.show_date %}
+            <span class="blog-post-time{% if articleSearch == true or section.settings.show_author %} blog-post-time-divider{% endif %}">{{ article.published_at | date: '%B %d, %Y' }}</span>
+          {% endif %}
+          {%- if articleSearch == true or section.settings.show_author -%}
+            <span>{{ article.author }}</span>
+          {%- endif -%}
+        {% else %}
+          <span class="blog-post-time blog-post-time-default"> {{ 'blogs.onboarding_article.date' | t }}</span>
+        {% endif %}
+      </div>
+    {% endif %}
+    <div class="blog-post-text">
+      <h6 class="blog-post-title {{ textClass }}">
+        {% if article != blank %}
+          {{ article.title }}
+        {% else %}
+          {{ 'blogs.onboarding_article.title' | t }}
+        {% endif %}
+      </h6>
+   
+      {% if article.excerpt_or_content != blank and section.settings.show_excerpt  %}
+      <p class="blog-post-desc rte">
+        {% liquid
+          if article != blank 
+           if section.settings.show_excerpt  
+            echo article.excerpt_or_content | strip_html | truncatewords: 10
+          endif 
+          else
+            echo 'blogs.onboarding_article.content' | t
+          endif
+        %}
+      </p>
+        {% endif %}
+
+      {% if section.settings.show_tags and article.tags.size > 0 %}
+        <ul class="list-inline blog-post-tags">
+          {% for tag in article.tags %}
+            <li class="blog-post-tag-item">
+              <a class="unstyled-link blog-post-tag-link" href="{{ blog.url }}/tagged/{{tag}}">{{ tag }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+
+    <{% if article != blank %}a  href="{{ article.url }}" {% else %}div{% endif %} class="{% if read_more_button == 'link-button' %}text-underline text-small {%else%}button {% endif %} small-btn">
+      <span>{{- 'sections.featured_blog.read_more' | t -}}</span>
+    </{% if article != blank %}a{% else %}div{% endif %}>
+  </div>
+</div>

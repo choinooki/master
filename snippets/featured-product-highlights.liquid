@@ -1,0 +1,151 @@
+{% liquid 
+  assign image_size = section.settings.image_ratio
+  if image_size == 'landscape'
+    assign imageRatio = '70'
+  elsif image_size == 'square'
+    assign imageRatio = '100'
+  elsif image_size == 'portrait'
+    assign imageRatio = '130'
+  else
+    assign imageRatio = 100
+  endif
+%}
+
+{% assign highlight_text_1 = '' %}
+{% assign highlight_image_1 = '' %}
+
+{% assign highlight_text_2 = '' %}
+{% assign highlight_image_2 = '' %}
+
+{% assign highlight_text_3 = '' %}
+{% assign highlight_image_3 = '' %}
+
+{% assign highlight_text_4 = '' %}
+{% assign highlight_image_4 = '' %}
+
+{%  for block in section.blocks %}
+  {% if block.type == 'product-highlights' %}
+    {% if block.settings.highlights_text != blank and highlight_text_1 == blank %}
+        {% assign highlight_text_1 = block.settings.highlights_text %}
+        {% assign highlight_image_1 = block.settings.highlights_image %}
+    {% elsif block.settings.highlights_text != blank and highlight_text_2 == blank %}
+        {% assign highlight_text_2 = block.settings.highlights_text %}
+        {% assign highlight_image_2 = block.settings.highlights_image %}
+    {% elsif block.settings.highlights_text != blank and highlight_text_3 == blank %}
+        {% assign highlight_text_3 = block.settings.highlights_text %}
+        {% assign highlight_image_3 = block.settings.highlights_image %}
+    {% elsif block.settings.highlights_text != blank and highlight_text_4 == blank %}
+        {% assign highlight_text_4 = block.settings.highlights_text %}
+        {% assign highlight_image_4 = block.settings.highlights_image %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+
+<div class="product-highlights-tab-content-left">
+    {% if highlight_text_1 != blank %}
+<div class="product-highlights-custom-icon-details" style="--item-index:1;">
+            <div class="product-highlights-custom-icon">
+                <div class="media-box" style="--image-ratio: 100%;">
+                    {% if highlight_image_1 != blank %}
+                    {% render 'image', image: highlight_image_1 %}
+                    {% else %}
+                    {{ 'product-apparel-2' | placeholder_svg_tag: 'placeholder-svg' }}
+                    {% endif %}
+                </div>
+            </div>
+            
+                <div class="product-highlights-custom-icon-content">
+                <h6 class="product-highlights-custom-icon-heading h6 heading-font">{{ highlight_text_1 }}</h6>
+                </div>
+            
+            <div class="product-highlights-border-line">
+            </div>
+        </div>
+    {% endif %}
+        {% if highlight_text_3 != blank %}
+        <div class="product-highlights-custom-icon-details" style="--item-index:3;">
+            <div class="product-highlights-custom-icon">
+                <div class="media-box" style="--image-ratio: 100%;">
+                    {% if highlight_image_3 != blank %}
+                    {% render 'image', image: highlight_image_3 %}
+                    {% else %}
+                    {{ 'product-apparel-2' | placeholder_svg_tag: 'placeholder-svg' }}
+                    {% endif %}
+                </div>
+            </div>
+                <div class="product-highlights-custom-icon-content">
+                <h6 class="product-highlights-custom-icon-heading h6 heading-font">{{ highlight_text_3 }}</h6>
+                </div>
+           
+            <div class="product-highlights-border-line">
+            </div>
+        </div>
+    {% endif %}
+</div>
+<div class="product-highlights-tab-content-middle">
+    <div class="product-highlights-tab-content-img-wrapper">
+      <div class="product-highlights-tab-content-img-item">
+        <div class="product-highlights-tab-content-img">
+          {% assign featured_image = product.featured_media.preview_image %}
+        {% if section.settings.highlight_tab_image != blank %}
+            {% if image_size == 'auto' %}
+              {%- assign imageRatio = 1 | divided_by:  section.settings.highlight_tab_image.aspect_ratio | times: 100 %} 
+            {% endif %}
+            <div class="media-box" style="--image-ratio: {{ imageRatio }}%;">
+              {% render 'image', image: section.settings.highlight_tab_image %}
+            </div>
+        {% elsif featured_image != blank %}
+          {% if image_size == 'auto' %}
+          {%- assign imageRatio = 1 | divided_by:  product.featured_media.preview_image.aspect_ratio | times: 100 %} 
+          {% endif %}
+          <div class="media-box" style="--image-ratio: {{ imageRatio }}%;">
+            {% render 'image', image: product.featured_media.preview_image %}
+          </div>
+        {% else %}
+          <div class="media-box" style="--image-ratio: {{ imageRatio }}%;">
+            {{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          </div>
+        {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="product-highlights-tab-content-right">
+    {% if highlight_text_2 != blank %}
+    <div class="product-highlights-custom-icon-details" style="--item-index:2;">
+        <div class="product-highlights-custom-icon">
+            <div class="media-box" style="--image-ratio: 100%;">
+                {% if highlight_image_2 != blank %}
+                {% render 'image', image: highlight_image_2 %}
+                {% else %}
+                {{ 'product-apparel-2' | placeholder_svg_tag: 'placeholder-svg' }}
+                {% endif %}
+            </div>
+        </div>
+        <div class="product-highlights-custom-icon-content">
+            <h6 class="product-highlights-custom-icon-heading h6 heading-font">{{ highlight_text_2 }}</h6>
+        </div>
+        <div class="product-highlights-border-line">
+         </div>
+    </div>
+{% endif %}
+    {% if highlight_text_4 != blank %}
+    <div class="product-highlights-custom-icon-details" style="--item-index:4;">
+        <div class="product-highlights-custom-icon">
+            <div class="media-box" style="--image-ratio: 100%;">
+                {% if highlight_image_4 != blank %}
+                {% render 'image', image: highlight_image_4 %}
+                {% else %}
+                {{ 'product-apparel-2' | placeholder_svg_tag: 'placeholder-svg' }}
+                {% endif %}
+            </div>
+        </div>
+            <div class="product-highlights-custom-icon-content">
+            <h6 class="product-highlights-custom-icon-heading h6 heading-font">{{ highlight_text_4 }}</h6>
+            </div>
+        <div class="product-highlights-border-line">
+         
+        </div>
+    </div>
+{% endif %}
+  </div>

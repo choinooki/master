@@ -1,0 +1,72 @@
+{% liquid
+  assign price_min = cProduct.price_min | default: 1999 | money
+  assign price = current_variant.price | default: 1999
+  assign money_price = price | money
+  assign price_max = cProduct.price_max
+  assign compare_at_price = cProduct.compare_at_price
+  assign money_price_min = price_min
+  assign money_price_max = price_max | money
+  %}
+<div class="product-pricing  {% if cProduct.compare_at_price_min > cProduct.price_min %} discount-price {% endif %}">
+    {%- if cProduct.quantity_price_breaks_configured? -%}
+      {%- if compare_at_price -%}
+        {%- unless cProduct.price_varies == false and cProduct.compare_at_price_varies %}
+          <span class="visually-hidden hidden">
+            {{- 'products.product.price.regular_price' | t -}}
+          </span>
+          <span>
+            <span class="product-compare-price">
+                {{ compare_at_price | money }}
+            </span>
+          </span>
+        {%- endunless -%}
+      {%- endif -%}
+      <span class="product-actual-price">
+        {{-
+          'products.product.volume_pricing.price_range'
+          | t: minimum: money_price_min, maximum: money_price_max
+        -}}
+      </span>
+    {% else %}
+    {%- if cProduct.price_varies -%}
+      <span class="product-actual-price price-varies">
+        {{- 'products.product.price.from_price_html' | t: price: price_min -}}
+      </span>
+    {%- else -%}
+      <span class="product-actual-price">{{ price_min }}</span>
+    {%- endif -%}
+    {%- if cProduct.compare_at_price_min > cProduct.price_min -%}
+      <span class="product-compare-price">{{ cProduct.compare_at_price_min | money }}</span>
+    {%- endif -%}
+  {% endif %}
+
+    {%- if cProduct.compare_at_price_min > cProduct.price_min -%}
+      {% if settings.product_price_saving %}
+        {% assign offText = 'products.product.off' | t %}
+        <span
+          class="product-discount-price {% if cProduct.compare_at_price_min > cProduct.price_min %}price-saving{% else %}hidden{% endif %}"
+          data-price-saving
+        >
+          {%- if cProduct.compare_at_price_min > cProduct.price_min %}
+            {{-
+              cProduct.compare_at_price_min
+              | minus: cProduct.price_min
+              | times: 100
+              | divided_by: cProduct.compare_at_price_min
+              | append: '% '
+              | append: offText
+            -}}
+          {% endif %}
+        </span>
+      {% endif %}
+    {% endif %}
+    {%- if current_variant.unit_price_measurement -%}
+      <span class="product-unit-price text-small">
+        {{ current_variant.unit_price | money }} /
+        {% if current_variant.unit_price_measurement.reference_value != 1 -%}
+          {{- current_variant.unit_price_measurement.reference_value -}}
+        {%- endif %}
+        {{ current_variant.unit_price_measurement.reference_unit }}
+      </span>
+    {%- endif -%}
+  </div>

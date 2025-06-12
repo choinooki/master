@@ -1,0 +1,41 @@
+{% assign product_form_id = 'product-form-' | append: section.id | append: '-' | append: product.id | append: '-' | append: variant.id %}
+<collecton-table-variant class="collection-table-variant-list {{ newclass }}">
+    <div class="collection-table-variant-info">
+        <div class="collection-table-variant-img">
+            <div class="media-box" style="--image-ratio: 100%">
+                {%- if variant.image.src != blank -%}
+                   {%- render 'image', image: variant.image.src -%}
+                {%- elsif product.featured_media != blank -%}
+                  {%- render 'image', image: product.featured_media.preview_image -%}
+                {% else %}
+                  {{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                {% endif %}
+              </div>
+        </div>
+        <div class="collection-table-variant-img-info">
+          {% if product.has_only_default_variant %}
+            <span class="variant-title heading-font">{{ product.title }}</span>
+          {% else %}
+            <span class="variant-title heading-font">{{ variant.title }}</span>
+          {% endif %}
+          {% if variant.sku != blank %}
+           <span class="varint-sku">
+            {{ variant.sku }}
+           </span>
+           {% endif %}
+        </div>
+    </div>
+    <div class="collection-table-variant-price">
+      {%- assign variant_price = variant.price | money_with_currency -%}
+      {{- 'products.product.volume_pricing.price_at_each' | t: price: variant_price -}}
+    </div>
+    <div class="collection-table-variant-quantity" data-collection-table-variant-quantity>
+        {% render 'table-variant-quantity', product: product, product_form_id: product_form_id, variant: variant %}
+    </div>
+    <div class="collection-table-variant-total-price" data-collection-table-variant-total data-price="{{ variant.price }}">
+      <span>Total:  <span class="table-total-price">{{ variant.price | money }}</span></span>
+    </div>
+    <div class="collection-table-variant-add-to-cart">
+      {% render 'product-form', product: product, product_form_id: product_form_id, current_variant: variant, addtocartclass: 'outline-button small-btn', source: 'collection-table' %}
+    </div>
+</collecton-table-variant>

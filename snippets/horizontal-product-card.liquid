@@ -1,0 +1,25 @@
+<div class="horizontal-product-card">
+    <{% if product != blank %}a href="{{ product.url }}" aria-label="product {{ product.title }}" {% else %}div {% endif %} class="horizontal-product-image media-wrapper">
+        <div class="media-box" style="--image-ratio: 100%">
+            {%- if product.featured_media != blank -%}
+                {%- render 'image', image: product.featured_media.preview_image -%}
+            {% else %}
+                {{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            {% endif %}
+            </div>
+    </{% if product != blank %}a{% else %}div{% endif %}>
+    <div class="horizontal-product-detail">
+        {% if product != blank %}
+            <a href="{{ product.url }}" title="{{ product.title | strip_html }}" class="product-title {{ settings.font_type }}-font"> {{ product.title }}</a>
+            {% render 'product-card-price', cProduct : product, current_variant : current_variant   %}
+            <div class="product-view-detail">
+                <a href="{{ product.url }}" class="text-underline text-small">Shop Now</a>
+            </div>
+        {% else %}
+            <div class="product-title {{ settings.font_type }}-font">{{ 'products.product.onboarding.title' | t }}</div>
+            <div class="product-pricing" id="price-title-wrapper-{{section.id}}-{{product.id}}">
+              <span class="product-actual-price heading-font">{{ 1999 | money_with_currency }}</span>
+            </div>
+       {% endif %}
+    </div>
+</div>

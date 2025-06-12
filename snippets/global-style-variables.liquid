@@ -1,0 +1,245 @@
+{%- liquid
+    assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
+    assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic'
+    assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic'
+  
+    assign heading_font_bold = settings.type_heading_font | font_modify: 'weight', 'bold'
+    assign heading_font_italic = settings.type_heading_font | font_modify: 'style', 'italic'
+    assign heading_font_bold_italic = heading_font_bold | font_modify: 'style', 'italic'
+  
+    assign accent_font_bold = settings.type_accent_font | font_modify: 'weight', 'bold'
+    assign accent_font_italic = settings.type_accent_font | font_modify: 'style', 'italic'
+    assign accent_font_bold_italic = accent_font_bold | font_modify: 'style', 'italic'
+%}
+
+
+{% style %}
+
+    {{ settings.type_body_font | font_face: font_display: 'swap' }}
+    {{ body_font_bold | font_face: font_display: 'swap' }}
+    {{ body_font_italic | font_face: font_display: 'swap' }}
+    {{ body_font_bold_italic | font_face: font_display: 'swap' }}
+
+    {{ settings.type_heading_font | font_face: font_display: 'swap' }}
+    {{ heading_font_bold | font_face: font_display: 'swap' }}
+    {{ heading_font_italic | font_face: font_display: 'swap' }}
+    {{ heading_font_bold_italic | font_face: font_display: 'swap' }}
+
+    {{ settings.type_accent_font | font_face: font_display: 'swap' }}
+    {{ accent_font_bold | font_face: font_display: 'swap' }}
+    {{ accent_font_italic | font_face: font_display: 'swap' }}
+    {{ accent_font_bold_italic | font_face: font_display: 'swap' }}
+
+      
+  :root {
+      --body-font-family: {{ settings.type_body_font.family }},{{ settings.type_body_font.fallback_families }};
+      --body-font-weight: {{ settings.type_body_font.weight }};
+      --body-font-style: {{ settings.type_body_font.style }};
+      --body-font-line-height: {{ settings.type_body_line_height }};
+      --body-letter-spacing: {{ settings.type_body_spacing | default: "0" | divided_by: 1000.00 }}em;
+      --body-font-scale: {{ settings.type_body_scale | divided_by : 100.00 }};;
+      
+      --heading-font-family: {{ settings.type_heading_font.family }},{{ settings.type_heading_font.fallback_families }};
+      --heading-font-style: {{ settings.type_heading_font.style }};
+      --heading-font-weight: {{ settings.type_heading_font.weight }};
+      --heading-font-line-height: {{ settings.type_heading_line_height }};
+      --heading-letter-spacing: {{ settings.type_header_spacing | default: "0" | divided_by: 1000.00 }}em;
+      --heading-font-scale: {{ settings.type_heading_scale | divided_by : 100.00 }};
+
+
+        --accent-font-family: {{ settings.type_accent_font.family }}, {{ settings.type_accent_font.fallback_families }};
+        --accent-font-style: {{ settings.type_accent_font.style }};
+        --accent-font-weight: {{ settings.type_accent_font.weight }};
+        --accent-font-line-height: {{ settings.type_accent_line_height }};
+        --accent-letter-spacing: {{ settings.type_accent_letter_spacing | default: "0" | divided_by: 1000.00 }}em;
+        --accent-font-scale: {{ settings.type_accent_scale | divided_by : 100.00 }};
+
+
+      --button-font-family: var({{ settings.button_font }});
+      --button-font-weight:var({{ settings.button_font | replace: 'family', 'weight' }});
+      --button-font-style:var({{ settings.button_font | replace: 'family', 'style' }});
+      --button-text-transform: {{ settings.button_text_transform }};
+      --button-radius: {{ settings.button_radius }}px;
+      --xsmall-text: calc(var(--body-font-scale) * 10px);
+      --small-text: calc(var(--body-font-scale) * 12px);
+      --text: calc(var(--body-font-scale) * 14px);
+      --medium-text: calc(var(--body-font-scale) * 16px);
+      --large-text: calc(var(--body-font-scale) * 20px);
+      --xlarge-text: calc(var(--body-font-scale) * 22px);
+      --h1: calc(var(--heading-font-scale) * 70px);
+      --h2: calc(var(--heading-font-scale) * 45px);
+      --h3: calc(var(--heading-font-scale) * 40px);
+      --h4: calc(var(--heading-font-scale) * 35px);
+      --h5: calc(var(--heading-font-scale) * 30px);
+      --h6: calc(var(--heading-font-scale) * 25px);
+
+      --body-background:{{ settings.primary_bg_color }};
+      --body-alternate-background: {{ settings.primary_alternate_bg_color }};
+      --heading-color:{{ settings.primary_heading_color }};
+      --text-color: {{ settings.primary_text_color }};
+      --text-light-color: {{ settings.primary_text_color | color_modify: 'alpha', 0.5 }};
+      --text-extralight-color: {{ settings.primary_text_color | color_modify: 'alpha', 0.3 }};
+      --link-color: {{ settings.primary_link_color }};
+      --button-background:{{ settings.primary_btn_bg_color }};
+      --button-text-color: {{ settings.primary_btn_text_color }};
+      --button-border: {{ settings.primary_btn_border_color }};
+      --button-background-hover:{{ settings.primary_btn_hover_color }};
+      --button-text-color-hover: {{ settings.primary_btn_hovertext_color }};
+      --button-border-hover: {{ settings.primary_btn_hover_border_color }};
+      --image-bg: {{ settings.primary_img_bg }};
+      --form-border: {{ settings.primary_input_border }};
+      --form-background: {{ settings.primary_input_bg }};
+      --form-text-color: {{ settings.primary_input_text }};
+      --form-radius: {{ settings.input_radius }}px;
+      --border-color: {{ settings.primary_divider_color }};
+      --slider-icon-color: {{ settings.primary_slider_icon_color }};
+      --slider-icon-background: {{ settings.primary_slider_icon_bg_color }};
+      --product-border: {{ settings.primary_product_border }};
+      --product-background: {{ settings.primary_product_background }};
+      --product-title-color:{{ settings.primary_product_title }};
+      --site-overlay: {{ settings.site_overlay_popup | color_modify: 'alpha', 0.7 }};
+      --header-background: {{ settings.header_bg_color }};
+      --header-text-color:{{ settings.header_text_color }};
+      --header-hover-color: {{ settings.header_hover_color }};
+      --submenu-background:{{ settings.submenu_bg_color }};
+      --submenu-color:{{ settings.submenu_text_color }};
+      --submenu-hover-color:{{ settings.submenu_hover_color }};
+      --submenu-border-color:{{ settings.submenu_border_color }};
+      --card-radius:{{ settings.card_radius }}px;
+      --block-radius:{{ settings.block_radius }}px;
+      --slider-arrow:{{ settings.slider_arrow }}px;
+
+      --footer-background:{{ settings.footer_bg_color }};
+      --footer-heading-color:{{ settings.footer_heading_color }};
+      --footer-text-color:{{ settings.footer_text_color }};
+      --footer-link-color:{{ settings.footer_link_color }};
+      {% assign footerBgBrightness = settings.footer_bg_color | color_brightness %}
+        {%- if footerBgBrightness < 130 -%}
+        --footer-background-light:{{ settings.footer_bg_color | color_lighten: 20}};
+        {%- else -%}
+        --footer-background-light:{{ settings.footer_bg_color| color_darken: 20 }}; 
+        {%- endif -%} 
+      --footer-hover-color: {{ settings.footer_hover_color }};
+     
+      --footer-newsletter-text:{{ settings.newsletter_text }};
+      --newsletter-button-background:{{ settings.newsletter_button_bg }};
+
+      --error-text-color: #ec2525;
+      --error-text-background: {{ 'red' | color_modify: 'alpha', 0.08 }};
+      --success-text-color: green;
+      --success-text-background: {{ 'green' | color_modify: 'alpha', 0.05 }};
+
+      --inventory-instock-color: {{ settings.inventory_instock }};
+      --inventory-lowstock-color: {{ settings.inventory_lowstock }};
+      --inventory-outofstock-color: {{  settings.inventory_outofstock }};
+      --inventory-restock-color: {{  settings.inventory_restock }};
+      
+      --top-spacer: 0;
+      --bottom-spacer: 0;
+
+      --sale-badge-bg:{{ settings.sale_badge_background }};
+      --sale-badge-color:{{ settings.sale_badge_text }};
+      --soldout-badge-bg: {{ settings.soldout_badge_background }};
+      --soldout-badge-color: {{ settings.soldout_badge_text }};
+      --preorder-badge-bg: {{ settings.preorder_badge_background }};
+      --preorder-badge-color: {{ settings.preorder_badge_text }};
+      --custom-badge-bg:  {{ settings.custom_badge_background }};
+      --custom-badge-color: {{ settings.custom_badge_text }};
+      --product-discount-bg:{{ settings.product_discount_background }};
+      --product-discount-color:{{ settings.product_discount_text }};
+      --parallex-height:{{ settings.parallex_image_height_desktop }};
+  } 
+
+  {% for scheme in settings.color_schemes %}
+    {% if scheme.id == settings.default_color_scheme.id -%}:root,{% endif %}.scheme-{{ scheme.id }} {
+        --body-background:{{ scheme.settings.body_background }};
+        {% if scheme.settings.body_background_gradient != empty %}
+           --body-background-gradient: {{ scheme.settings.body_background_gradient }};
+        {% else %}
+            --body-background-gradient: {{ scheme.settings.body_background }};
+        {% endif %}
+        --body-alternate-background: {{ scheme.settings.alternate_background }};
+        --card-background: {{ scheme.settings.card_background.red }},{{ scheme.settings.card_background.green }},{{ scheme.settings.card_background.blue }};
+        --card-text: {{ scheme.settings.card_text.red }},{{ scheme.settings.card_text.green }},{{ scheme.settings.card_text.blue }};
+        --border-color: {{ scheme.settings.border_color.red }},{{ scheme.settings.border_color.green }},{{ scheme.settings.border_color.blue }};
+        
+        --sub-heading-color: {{ scheme.settings.sub_heading_color }};
+        --heading-color: {{ scheme.settings.heading_color }};
+        --text-color: {{ scheme.settings.text_color }};
+        --text-light-color: {{ scheme.settings.text_color | color_modify: 'alpha', 0.5 }};
+        --text-extralight-color: {{ scheme.settings.text_color | color_modify: 'alpha', 0.3 }};
+        --link-color: {{ scheme.settings.link_color }};
+        --marquee-text-color: {{ scheme.settings.marquee_color }};
+        --marquee-background: {{ scheme.settings.marquee_background }};
+        --highlight-background:{{ scheme.settings.highlight_background }};
+        --highlight-color:{{scheme.settings.highlight_color }};
+        
+        --button-background:{{ scheme.settings.button_background }};
+        --button-text-color: {{ scheme.settings.button_text_color }};
+        --button-border: {{ scheme.settings.button_border_color }};
+        --button-background-hover: {{ scheme.settings.button_hover_color }};
+        --button-text-color-hover: {{ scheme.settings.button_hovertext_color }};
+        --button-border-hover: {{ scheme.settings.button_hover_border_color }};
+
+        --secondary-button-background:{{ scheme.settings.secondary_button_background }};
+        --secondary-button-text-color: {{ scheme.settings.secondary_button_text }};
+        --secondary-button-border: {{ scheme.settings.secondary_button_border }};
+        --secondary-button-background-hover: {{ scheme.settings.secondary_button_background_hover }};
+        --secondary-button-text-color-hover: {{ scheme.settings.secondary_button_text_hover }};
+        --secondary-button-border-hover: {{ scheme.settings.secondary_button_border_hover }};
+
+        --image-bg: {{ scheme.settings.img_background }};
+        --overlay-bg:{{ scheme.settings.image_overlay_background.red }},{{ scheme.settings.image_overlay_background.green }},{{ scheme.settings.image_overlay_background.blue }};
+        --overlay-color: {{ scheme.settings.image_overlay_text }};
+
+        --form-border: {{ scheme.settings.input_border }};
+        --form-background: {{ scheme.settings.input_background }};
+        --form-text-color: {{ scheme.settings.input_text }};
+
+        --slider-icon-color: {{ scheme.settings.slider_icon_color }};
+        --slider-icon-background: {{ scheme.settings.slider_icon_bg_color }};
+        --slider-icon-border:{{ scheme.settings.slider_icon_border_color }};
+        
+        --product-border:{{ scheme.settings.product_border }};
+        --product-background:{{ scheme.settings.product_background }};
+        --product-title-color:{{ scheme.settings.product_title }};
+
+        {% assign shippingBarBrightness = scheme.settings.body_background | color_brightness %}
+        {%- if shippingBarBrightness < 130 -%}
+            --shipping-bar-line:{{ scheme.settings.body_background | color_lighten: 20 }};
+        {%- else -%}
+            --shipping-bar-line:{{ scheme.settings.body_background| color_darken: 50 }};
+        {%- endif -%}
+    }
+    {% endfor %}
+
+  @media (max-width:1440px){
+      :root{
+      --h1: calc(var(--heading-font-scale) * 50px);
+      --h2: calc(var(--heading-font-scale) * 36px);
+      --h3: calc(var(--heading-font-scale) * 26px);
+      --h4: calc(var(--heading-font-scale) * 24px);
+      --h5: calc(var(--heading-font-scale) * 22px);
+      --h6: calc(var(--heading-font-scale) * 20px);
+      }
+  }
+  @media (max-width:1199px){
+      :root{
+      --h1: calc(var(--heading-font-scale) * 40px);
+      --h2: calc(var(--heading-font-scale) * 30px);
+      --h5: calc(var(--heading-font-scale) * 20px);
+      --h6: calc(var(--heading-font-scale) * 18px);
+      }
+  }
+
+  @media (max-width:767px){
+      :root{
+        --h1: calc(var(--heading-font-scale) * 35px);
+        --h2: calc(var(--heading-font-scale) * 30px);
+        --parallex-height:{{ settings.parallex_image_height_mobile }};
+        --text: calc(var(--body-font-scale) * 14px);
+        --medium-text: calc(var(--body-font-scale) * 15px);
+        --large-text: calc(var(--body-font-scale) * 16px);
+      }
+  }
+{% endstyle %}

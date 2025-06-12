@@ -1,0 +1,28 @@
+{% liquid
+    assign collectionmenu =''
+     if block.settings.menu_selection or block.settings.menu != blank  
+        if block.settings.menu_selection
+            if collections.size > 0
+                assign collectionmenu = collections
+            endif 
+        elsif block.settings.menu != blank
+             assign collectionmenu =  linklists[block.settings.menu].links
+        endif 
+     endif 
+%}
+{% if collectionmenu != blank %}
+    {% assign indexLimit = 1 %}
+    {% if block.settings.menu_type %}
+        {% assign indexLimit = 4 %}
+    {% endif %}   
+    <div class="collection-menus scheme-{{ block.settings.color_scheme }}{% if block.settings.menu_type %} marquee-active autoplay-infinite {{ block.settings.direction }}-direction{% endif %}" id="collectionmenu-{{ block.id }}" {% if block.settings.menu_type %} data-marquee-text data-marquee-speed="{{ block.settings.scrolling_speed }}"
+        data-marquee-speed-mobile="{{ block.settings.scrolling_speed_mobile }}"{% endif %}> 
+        {%- for i in (1..indexLimit) -%}
+        <ul class="list-inline collection-menus-list"   {% if block.settings.menu_type %}data-marque-node{% endif %}>
+            {%- for link in collectionmenu -%}
+            <li class="collection-menus-item"><a href="{{ link.url }}" class="collection-menus-link" aria-label="{{ link.title }}">{{ link.title }}</a> </li>
+            {% endfor %}
+        </ul>
+      {% endfor %}
+    </div>
+{% endif %}

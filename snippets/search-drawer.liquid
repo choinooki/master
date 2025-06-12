@@ -1,0 +1,80 @@
+{{ 'collection-list.css' | asset_url | stylesheet_tag }}
+{{ 'search.css' | asset_url | stylesheet_tag }}
+<div class="side-drawer search-side-drawer scheme-{{ settings.drawer_color_scheme }}" data-search-wrapper>
+  <div class="close-fullwidth" data-search-close=""></div>
+  <div class="side-drawer-panel">
+    <div class="side-drawer-inner">
+      <div class="search-drawer-content" data-search-content>
+        <div class="search-drawer-header">
+          
+          <form action="{{ routes.search_url }}" method="get" role="search" class="search" data-search-form>
+            <input name="type" type="hidden" value="product">
+            <div class="search-drawer-input-group">
+              <label for="Search-In-Template" class="hidden">{{ 'general.search.search' | t }}</label>
+              <input
+                type="text"
+                class="form-control search-drawer-input"
+                id="Search-In-Template"
+                name="q"
+                value="{{ search.terms | escape }}"
+                placeholder="{{ 'general.search.search' | t }}"
+                data-search-input
+              >
+              <button type="submit" class="search-drawer-button" aria-label="{{ 'general.search.search' | t }}">
+                {% render 'theme-icons', theme_icon: 'search' %}
+              </button>
+              {% comment %} <button type="button" class="cursor-pointer search-drawer-clear text-small" data-clear-input>{{ 'templates.search.clear' | t }}</button> {% endcomment %}
+            </div>
+          </form>
+          <button class="drawer-close" data-search-close>
+            {% render 'theme-icons', theme_icon: 'drawer_close' %}
+          </button>
+        </div>
+        <div class="search-drawer-body">
+          {% if settings.enable_recent_search or settings.enable_suggestion or settings.enable_popular_categories %}
+            <div class="predictive-search" data-recent-suggestion>
+                {% if settings.enable_recent_search %}
+                  <div class="predictive-search-popular" data-recent-search-result></div>
+                {% endif %}
+                    <div class="predictive-search-inner{% if settings.enable_popular_categories == false or settings.enable_suggestion == false %} predictive-search-inner-single-result{% endif %}">
+                      {% if settings.enable_popular_categories %}
+                          <div class="predictive-search-left-suggestions">
+                              <div class="predictive-search-suggestions">
+                                {% if settings.popular_categories_heading != blank and settings.popular_categories != blank %}
+                                  <h6 class="predictive-search-heading">{{ settings.popular_categories_heading }}</h6>
+                                {% endif %}
+                                {% if settings.popular_categories != blank %}
+                                  <ul class="predictive-search-popular-list predictive-search-popular-categories">
+                                  {%- for item in settings.popular_categories limit: 6 -%}
+                                    <li class="predictive-search-popular-item">
+                                      <a class="predictive-search-popular-categories-link body-font" href="{{ item.url }}">{{- item.title -}}</a>
+                                    </li>
+                                  {%- endfor -%}
+                                  </ul>
+                                {% endif %}
+                              </div>
+                          </div>
+                      {% endif %}
+                        {% if settings.enable_suggestion %}
+                          <div class="predictive-search-product-suggestions">
+                                  {% if settings.suggestion_heading != blank and settings.suggestion_product != blank %}
+                                    <h6 class="predictive-search-heading">{{ settings.suggestion_heading }}</h6>
+                                  {% endif %}
+                                      {% if settings.suggestion_product != blank %}
+                                        <div class="predictive-search-suggestions-list">
+                                          {%- for item in settings.suggestion_product limit: 6 -%}
+                                            {% render 'horizontal-product-card', product: item %}
+                                          {% endfor %}
+                                        </div>
+                                      {% endif %}
+                          </div>
+                        {% endif %}
+              </div>
+            </div>
+          {% endif %}
+          <div class="predictive-search-result" data-search-body></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

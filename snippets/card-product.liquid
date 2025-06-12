@@ -1,0 +1,262 @@
+{%- liquid
+  assign current_variant = cProduct.selected_or_first_available_variant
+  assign second_image = ''
+
+  assign onProductHover = settings.product_second_image
+  if gridImageSize == 'landscape'
+    assign productImageRatio = 75
+  elsif gridImageSize == 'square'
+    assign productImageRatio = 100
+  elsif gridImageSize == 'portrait'
+    assign productImageRatio = 125
+  else
+    if cProduct.featured_media != blank
+      assign productImageRatio = 1 | divided_by: cProduct.featured_media.preview_image.aspect_ratio | times: 100
+    else
+      assign productImageRatio = 100
+    endif
+  endif
+  if cProduct.media.size > 1
+    for media in cProduct.media
+      unless media.preview_image.src == cProduct.featured_media.preview_image.src
+        assign second_image = media.preview_image
+        break
+      endunless
+    endfor
+  endif
+-%}
+{% capture productColorSwatchs %}
+{% if settings.show_swatches %}
+
+  {%- for option in cProduct.options_with_values -%}
+      {%- liquid
+        assign colorOptions = settings.color_name | downcase
+        assign downOption = option.name | downcase
+      -%}
+       
+      {% if colorOptions contains downOption %}
+          <ul class="product-variants-list product-loop-variants" tabindex="-1">
+            {%- for value in option.values limit: 7 -%}
+              {% liquid 
+                if forloop.first
+                endif
+                assign variantOption = 'option' | append: option.position 
+                assign colorVariant = cProduct.variants | where: variantOption, value | first
+                assign variantValue = cProduct.variants | where: variantOption, value | compact: 'featured_media' | first
+                if cProduct.url contains '?'
+                  assign productUrl =  cProduct.url | split : '&variant=' | first | append:'&variant=' | append: colorVariant.id
+                else
+                  assign productUrl =  cProduct.url | append:'?variant=' | append: colorVariant.id
+                endif
+              -%}
+              <li class="variant-item" card-color-option tabindex="-1" data-url="{{ productUrl }}">
+                <label class="hidden" for="product-{{ cProduct.id }}_option-{{ forloop.index }}-{{ section.id }}-{{ block.id }}-{{ value | handle }}">{{ value | escape }}</label>
+                <input
+                  class="productOption do-not-change"
+                  id="product-{{ cProduct.id }}_option-{{ forloop.index }}-{{ section.id }}-{{ block.id }}-{{ value | handle }}"
+                  type="radio"
+                  name="option-{{ forloop.index }}"
+                  value="{{ value | escape }}"
+                  title="{{ value | escape }}"
+                  tabindex="-1"
+                >
+                <span class="variant-item-name{% if value.swatch.image != blank %} variant-img{% else %}{% if variantValue and settings.show_variant_image %} variant-img{% endif %}{% endif %}"
+                {% if variantValue and settings.show_variant_image %}
+                    style="--swatch-img:url({{ variantValue.featured_media.preview_image | image_url: width: 22 }});"
+                  {% else %}
+                    {% if value.swatch.image %}
+                      style="--swatch-img:url({{ value.swatch.image | image_url: width: '77' }});  background-position:{{ value.swatch.image.presentation.focal_point }};"
+                    {% elsif value.swatch.color %}
+                      data-color="{{ value }}"
+                      style="--swatch-color:rgb({{ value.swatch.color.rgb }});"
+                    {% else %} 
+                      data-color="{{ value }}"
+                      style="--swatch-color:{{ value }};"
+                    {% endif %}
+                {% endif %}
+                ></span>
+                {% render 'card-product-color-media' variant: variantValue , second_image: second_image %}
+              </li>
+            {% endfor %}
+            {% if option.values.size > 7 %}
+              <li class="variant_option more" tabindex="-1">
+                <a href="{{ cProduct.url }}" class="unstyled-link option do-not-change" tabindex="-1"
+                  >+{{ option.values.size | minus: 7 -}}
+                </a>
+              </li>
+            {% endif %}
+          </ul>
+
+    {% endif %}
+  {% endfor %}
+{% endif %}        
+{% endcapture %}
+
+{% if settings.show_inventory and optionhide != false %}
+  {% assign inventoryCheck = true %}
+{% endif %}
+{% if  optionhide != false and productColorSwatchs != blank %}
+  {% assign swatchescheck = true %}
+{% endif %}
+
+<div
+  class="product-card{% if settings.image_border %} border-enabled {% endif %}{% if settings.image_background %} background-enabled {% endif %} {% if optionhide != false and settings.show_inventory or productColorSwatchs != blank and optionhide != false %}option-enabled{% endif %} bg-card-{{ settings.image_background }} border-card-{{ settings.image_border }}"
+  data-product-card
+>
+  <div class="product-card-img {% if second_image != blank and onProductHover == true %}hover-image {% endif %} img-bg-card-{{ settings.image_background }} img-border-card-{{ settings.image_border }}">
+    <{% if cProduct != blank %}a href="{{ cProduct.url }}" aria-label="{{ cProduct.title | strip_html  }}"{% else %}div{% endif %} class="product-img do-not-change" tabindex="-1" >
+      <div
+        class="media-box {% if cProduct.featured_media == blank %} no-product-image {% endif %}"
+        style="--image-ratio:{{ productImageRatio }}%"
+        data-main-image
+      >
+        {%- if cProduct.featured_media != blank -%}
+          {%- render 'image', image: cProduct.featured_media.preview_image, class: 'product-first-img' -%}
+          {%- if second_image != blank -%}
+            {%- render 'image', image: second_image, class: 'product-second-img' -%}
+          {%- endif -%}
+        {% else %}
+          {{ placeholder_image | placeholder_svg_tag: 'placeholder-svg' }}
+        {% endif %}
+      </div>
+    </{% if cProduct != blank %}a{% else %}div{% endif %}>
+    {% if showbadges != false %}
+      {% render 'badges', cProduct: cProduct %}
+    {% endif %}
+  </div>
+  <div class="product-card-detail">
+    <div class="product-card-content">
+    <div class="product-card-detail-info">
+      {% if settings.product_vendor %}
+        <p class="product-vendor text-xsmall">
+          {{ cProduct.vendor }}
+        </p>
+      {% endif %}
+      <{% if cProduct  != blank %}a href="{{ cProduct.url }}" title="{{ cProduct.title | strip_html }}"{% else %}div{% endif %} class="product-title {{ settings.font_type }}-font">
+        {% if cProduct.title %}
+          {{- cProduct.title | strip_html -}}
+        {% else %}
+          {{ 'products.product.onboarding.title' | t }}
+        {% endif %}
+      </{% if cProduct != blank %}a{% else %}div{% endif %}>
+     {% render 'product-card-price', cProduct : cProduct, current_variant : current_variant   %}
+     {%- if cProduct.quantity_price_breaks_configured? -%}
+      <div class="card-information-volume-pricing-note">
+        <span class="caption text-xsmall">{{ 'products.product.volume_pricing.note' | t }}</span>
+      </div>
+    {%- endif -%}
+    </div>
+    {% if optionhide != false %}
+      {% if settings.show_inventory or productColorSwatchs != blank %}
+        {% if productColorSwatchs != blank %}
+          {% assign swatchsCheck = true %}
+        {% endif %}
+
+        {% if settings.show_inventory %}
+          {% assign inventoryContent = true %}
+        {% endif %}
+        <div class="product-options">
+          {% if productColorSwatchs != blank %}
+            <div class="product-variants-box color-option circle">
+              {{ productColorSwatchs }}
+            </div>
+          {% endif %}
+
+          {% liquid
+            if settings.show_inventory
+              assign thershold = settings.inventory_threshold
+              if cProduct.available
+                assign stock = 0
+                assign selling = false
+                assign lows_inventory = false
+                assign track_inventory = true
+                for variant in cProduct.variants
+                  if variant.inventory_policy == 'continue' and settings.enable_preorder
+                    assign selling = true
+                  endif
+                  if variant.inventory_management == null
+                    assign track_inventory = false
+                  endif
+                  if variant.inventory_quantity == 0
+                    assign lows_inventory = true
+                  endif
+                  if variant.inventory_quantity > 0
+                    assign stock = stock | plus: variant.inventory_quantity
+                  endif
+                endfor
+                if track_inventory == true
+                  if lows_inventory == true and selling and stock >= 0
+                    assign stockconent = 'products.product.in_stock' | t
+                    assign stockClass = 'instock'
+                  elsif selling == false and stock > 0 and stock > thershold
+                    assign stockconent = 'products.product.in_stock_with_unit' | t: stock: stock
+                    assign stockClass = 'instock'
+                  elsif stock > 0 and thershold > stock
+                    assign stockconent = 'products.product.low_stock' | t: stock: stock
+                    assign stockClass = 'lowstock'
+                  elsif stock <= 0 and selling == true
+                    assign stockconent = 'products.product.restock' | t
+                    assign stockClass = 'restock'
+                  else
+                    assign stockconent = 'products.product.in_stock' | t
+                    assign stockClass = 'instock'
+                  endif
+                elsif track_inventory == false
+                  if selling == true and track_inventory == false and stock > 0
+                    assign stockconent = 'products.product.in_stock' | t
+                    assign stockClass = 'instock'
+                  elsif selling == false and stock > 0 and stock > thershold
+                    assign stockconent = 'products.product.in_stock_with_unit' | t: stock: stock
+                    assign stockClass = 'instock'
+                  elsif stock > 0 and thershold > stock
+                    assign stockconent = 'products.product.low_stock' | t: stock: stock
+                    assign stockClass = 'lowstock'
+                  elsif stock <= 0 and selling == true
+                    assign stockconent = 'products.product.restock' | t
+                    assign stockClass = 'restock'
+                  else
+                    assign stockconent = 'products.product.in_stock' | t
+                    assign stockClass = 'instock'
+                  endif
+                endif
+              else
+                assign stockconent = 'products.product.out_of_stock' | t
+                assign stockClass = 'outofstock'
+              endif
+            endif
+          %}
+          
+          {% if settings.show_inventory and cProduct != blank or settings.show_shipping and cProduct != blank %}
+            <p class="stock-inventory text-small {{ stockClass }}">
+              {% if settings.show_inventory -%}
+                <span>{{ stockconent }} </span>
+              {%- endif %}
+            </p>
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endif %}
+  </div>
+  <div class="product-card-action-buttons">
+    {% if optionhide != false %}
+      {% if settings.quickview and showquickview != false %}
+        <div class="product-view-button">
+          <a
+            href="{{ cProduct.url }}"
+            class="do-not-change"
+            data-quickview-action
+            aria-label="{{ 'sections.collection_template.quick_view' | t }}"
+            data-id="quickview-side-drawer"
+            data-product-id="{{ cProduct.id }}"
+          >
+            <span><svg width="19" height="15" viewBox="0 0 19 15" fill="none">
+              <path d="M17.6667 7.66666C17.6667 9.74996 15.1667 14.3334 9.33331 14.3334C3.5 14.3334 1 9.74996 1 7.66666C1 5.58334 3.5 1 9.33331 1C15.1667 1 17.6667 5.58334 17.6667 7.66666Z" stroke="currentColor" stroke-linecap="round"/>
+              <path d="M11.8333 7.66666C11.8333 9.04736 10.714 10.1667 9.33331 10.1667C7.95262 10.1667 6.83333 9.04736 6.83333 7.66666C6.83333 6.28596 7.95262 5.16667 9.33331 5.16667C10.714 5.16667 11.8333 6.28596 11.8333 7.66666Z" stroke="currentColor" stroke-linecap="round"/>
+              </svg></span>
+          </a>
+        </div>
+      {% endif %}
+    {% endif %}
+  </div>
+</div>
+</div>
