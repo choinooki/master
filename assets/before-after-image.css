@@ -1,0 +1,115 @@
+.before-after-img-wrapper {
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+    border-radius: var(--block-radius);
+}
+
+.before-after-img-main,
+.before-after-img-overlay {
+    background: var(--image-bg);
+    overflow: hidden;
+}
+
+.before-after-img-overlay {
+    clip-path: inset(0 0 0 calc(var(--drag-start-position, 50%) + var(--image-clip-position, 0px)));
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+}
+
+.before-after-img-label {
+    position: absolute;
+    z-index: 1;
+    font-size: var(--large-text);
+}
+
+.before-after-img-label {
+    background: var(--body-alternate-background);
+    padding: 5px 15px;
+}
+
+.before-after-img-label[class*="left"] {
+    left: 0;
+}
+
+.before-after-img-label[class*="right"] {
+    right: 0;
+}
+
+.before-after-img-label[class*="top"] {
+    top: 0;
+}
+
+.before-after-img-label[class*="bottom"] {
+    bottom: 0;
+}
+
+.before-after-img-drag {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.before-after-drag-point {
+    height: 100%;
+    width: max-content;
+    touch-action: none;
+    transform: translate(calc(1 * -50% + var(--image-clip-position, 0px)), -50%);
+    cursor: grab;
+    place-items: center;
+    display: grid;
+    position: relative;
+    z-index: 1;
+}
+
+.before-after-drag-point {
+    top: 50%;
+}
+
+.before-after-drag-point {
+    left: var(--drag-start-position, 0px);
+}
+
+.before-after-drag-point {
+    right: var(--drag-start-position, 0px);
+}
+
+.before-after-drag-point:before {
+    position: absolute;
+    content: "";
+    height: 100%;
+    width: 2px;
+    background: #fff;
+    z-index: -1;
+}
+
+.before-after-drag-cursor {
+    width: 32px;
+    height: 32px;
+    background: #fff;
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    color: #000;
+}
+
+@media (min-width:768px) {
+    .before-after-drag-cursor {
+        width: 52px;
+        height: 52px;
+    }
+}
+
+@media (max-width: 767px) {
+    .before-after-drag-cursor svg {
+        width: 20px;
+    }
+}
